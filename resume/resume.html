@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Gaurav Mahavar – Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+<style>
+  @page { size: A4; margin: 0; }
+  :root { --ink: #1c1917; --muted: #57534e; --line: #e7e5e4; --accent: #ea580c; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, "Segoe UI", Arial, sans-serif; color: var(--ink); font-size: 8.7pt; line-height: 1.38; }
+  .page { width: 210mm; min-height: 297mm; padding: 11mm 13mm 9mm; }
+  a { color: inherit; text-decoration: none; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 9pt; border-bottom: 2pt solid var(--accent); }
+  h1 { font-family: "Space Grotesk", Inter, sans-serif; font-size: 25pt; line-height: 1; letter-spacing: -0.02em; }
+  h1 .dot { color: var(--accent); }
+  .role { margin-top: 4pt; font-size: 10.5pt; font-weight: 600; color: var(--accent); letter-spacing: 0.01em; }
+  .contact { text-align: right; font-size: 8.4pt; color: var(--muted); line-height: 1.6; }
+  .contact b { color: var(--ink); font-weight: 500; }
+
+  section { margin-top: 8pt; }
+  h2 { font-family: "Space Grotesk", Inter, sans-serif; font-size: 9.2pt; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); padding-bottom: 3pt; margin-bottom: 5pt; border-bottom: 0.75pt solid var(--line); }
+  p.summary { color: #292524; }
+
+  .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8pt; }
+  .job-title { font-weight: 700; font-size: 9.8pt; }
+  .job-org { color: var(--muted); font-weight: 500; }
+  .when { font-size: 8.4pt; color: var(--muted); white-space: nowrap; font-weight: 500; }
+  .product { margin-top: 4pt; font-weight: 600; font-size: 9pt; }
+  .product span { font-weight: 400; color: var(--muted); }
+  ul { margin: 2pt 0 0 11pt; }
+  li { margin-top: 1.6pt; padding-left: 1pt; }
+  li::marker { color: var(--accent); }
+  .note { margin-top: 4pt; color: var(--muted); font-size: 8.6pt; }
+
+  .projects { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5pt 12pt; }
+  .proj b { font-weight: 600; }
+  .proj .stack { display: block; font-size: 8pt; color: var(--accent); font-weight: 500; margin-top: 0.5pt; }
+  .proj p { color: #44403c; font-size: 8.6pt; }
+
+  .skills { display: grid; grid-template-columns: 1fr 1fr; gap: 2pt 14pt; }
+  .skills b { font-weight: 600; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12pt; }
+  .row { display: flex; justify-content: space-between; gap: 8pt; }
+  .row + .row { margin-top: 3pt; }
+  .sub { color: var(--muted); font-size: 8.4pt; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div>
+      <h1>Gaurav Mahavar<span class="dot">.</span></h1>
+      <div class="role">Software Engineer &amp; Full-Stack Developer</div>
+    </div>
+    <div class="contact">
+      Ahmedabad, Gujarat, India<br />
+      <a href="mailto:gauravmahavar2002@gmail.com"><b>gauravmahavar2002@gmail.com</b></a><br />
+      <a href="https://www.linkedin.com/in/gaurav-mahavar-688114215">linkedin.com/in/gaurav-mahavar-688114215</a><br />
+      <a href="https://github.com/gaurav-209">github.com/gaurav-209</a> · <a href="https://gauravmahavar.in">gauravmahavar.in</a>
+    </div>
+  </header>
+
+  <section>
+    <h2>Profile</h2>
+    <p class="summary">
+      Full-stack developer building web apps, desktop apps and business websites with React, Node.js, Express and MySQL/MongoDB.
+      On the Swiftfolios wealth-management platform I work across the React web app, the Node.js API and Electron trading desktops,
+      including broker and exchange integrations, real-time market data and FIX-based order workflows.
+    </p>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+    <div class="job-head">
+      <div><span class="job-title">Software Engineer – Product Development</span> <span class="job-org">· Greatbear Ventures Private Limited, Ahmedabad</span></div>
+      <div class="when">Oct 2025 – Nov 2026</div>
+    </div>
+    <p class="note" style="margin-top:1pt">Joined as a Web Development Intern (Jul – Oct 2025), then moved into the product engineering role.</p>
+
+    <div class="product">Swiftfolios Web App <span>· React, Tailwind CSS</span></div>
+    <ul>
+      <li><b>Built most of the mutual-fund module:</b> MF watchlist, portfolio, SIPs, transactions and SIP transactions, buy/redeem flows with UPI and net-banking payments, mandates and MF account (UCC) creation.</li>
+      <li>Built and maintained features for customer, advisor (super-user), admin and dealing-desk users: portfolio and performance views, order generation and order books.</li>
+      <li><b>Built the custom report management module</b> (UI and API): report builder with templates and history, on-demand and scheduled runs for statements, gain/loss and capital-gains reports and contract notes.</li>
+      <li>Worked on AI research reports, client onboarding (generated PANs, segment-wise brokerage setup) and responsive mobile layouts.</li>
+    </ul>
+
+    <div class="product">Swiftfolios API <span>· Node.js, Express, MySQL</span></div>
+    <ul>
+      <li>Developed REST API services for the web, desktop and dealer apps covering portfolio, order, reporting and client-management workflows.</li>
+      <li>Integrated Zerodha Kite and NSE; added role-based access guards for admin, super-user and back-office roles; hardened security with SQL-injection mitigation, route protection and token masking in request logs.</li>
+    </ul>
+
+    <div class="product">Swiftfolios Stock &amp; Equity Desktop App <span>· React, Electron</span></div>
+    <ul>
+      <li>Built stock and equity workflows: order instructions and pricing, watchlists, previous-close charts, report scheduling and ticket support.</li>
+      <li>Implemented live market-feed health checks with auto-reconnect, the Zerodha login popup, and Windows/macOS packaging with auto-update.</li>
+    </ul>
+
+    <div class="product">Dealer Console <span>· Electron, FIX</span></div>
+    <ul>
+      <li>Contributed to dealer-management and order workflows: FIX-based cancel/modify handling, derivative lot sizes, algo configuration and trading timings.</li>
+      <li>Added Excel order import, customer search, API integrations and real-time updates; set up Electron builds with user-controlled auto-update.</li>
+    </ul>
+
+  </section>
+
+  <section>
+    <h2>Personal Projects</h2>
+    <div class="projects">
+      <div class="proj">
+        <b>MyContacts</b> · <a href="https://mycontacts-frontend-ten.vercel.app">live</a>
+        <span class="stack">React · Express · MongoDB · JWT</span>
+        <p>Contact manager with JWT sign-in and private, per-user contacts.</p>
+      </div>
+      <div class="proj">
+        <b>React Mini Apps</b>
+        <span class="stack">React · Vite · html2canvas · jsPDF</span>
+        <p>Visiting-card designer with PDF export and a live-weather app.</p>
+      </div>
+      <div class="proj">
+        <b>Advocate Business Website</b>
+        <span class="stack">React · Tailwind CSS · React Router</span>
+        <p>Legal-practice site with service pages, enquiry form and SEO.</p>
+      </div>
+      <div class="proj">
+        <b>Next.js E-commerce</b> <span class="sub">(in progress)</span>
+        <span class="stack">Next.js · MongoDB · JWT</span>
+        <p>Store with secure login, MongoDB catalogue, search and filters.</p>
+      </div>
+      <div class="proj">
+        <b>TrackMyCash</b>
+        <span class="stack">React · React Router · Vite</span>
+        <p>Income and expenses by category with monthly filters.</p>
+      </div>
+      <div class="proj">
+        <b>Product Catalogue</b>
+        <span class="stack">React · Bootstrap · Context API</span>
+        <p>Card and table views with a stock-aware cart.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Technical Skills</h2>
+    <div class="skills">
+      <p><b>Languages:</b> JavaScript (ES6+), HTML5, CSS3</p>
+      <p><b>Frontend:</b> React.js, Next.js, Tailwind CSS, Bootstrap, MUI</p>
+      <p><b>Backend:</b> Node.js, Express.js, REST APIs, JWT auth, Axios</p>
+      <p><b>Databases:</b> MySQL, MongoDB (Mongoose), IndexedDB</p>
+      <p><b>State:</b> Redux, Context API, TanStack Query, WebSockets</p>
+      <p><b>Desktop &amp; fintech:</b> Electron, Zerodha Kite, NSE, FIX</p>
+      <p><b>Tools:</b> Git, GitHub, VS Code, npm, Vite, Vercel, Render</p>
+    </div>
+  </section>
+
+  <div class="two">
+    <section>
+      <h2>Education &amp; Training</h2>
+      <p><b>B.Tech, Computer Engineering</b> · Silver Oak University <span class="sub">· 2024</span></p>
+      <p style="margin-top:2pt"><b>React.js Training</b> · Technishal <span class="sub">· Dec 2024</span></p>
+    </section>
+    <section>
+      <h2>Earlier Experience</h2>
+      <p><b>Cashless Officer</b> · Medilink Hospital <span class="sub">· 2023 – 2024</span></p>
+      <p style="margin-top:2pt"><b>Customer Care Associate</b> · Shoppers Stop <span class="sub">· 2020 – 2023</span></p>
+    </section>
+  </div>
+</div>
+</body>
+</html>
