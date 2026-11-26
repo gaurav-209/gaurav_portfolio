@@ -29,23 +29,16 @@ export const about = {
   // highlighted parts are shown in orange.
   story: [
     [
-      ["My path into software didn’t start at a keyboard. Alongside my B.Tech, I worked in ", false],
+      ["After roles in ", false],
       ["customer care", true],
-      [" and then on ", false],
+      [" and ", false],
       ["hospital insurance claims", true],
-      [", and learned how much a clear process matters to the people using it.", false],
-    ],
-    [
-      ["In late 2024 I went all in on code: React training, then an internship at ", false],
-      ["Greatbear Ventures", true],
-      [" that became a full-time role building Swiftfolios.", false],
-    ],
-    [
-      ["Today I build ", false],
+      [", I went all in on code in 2024. Today I build ", false],
       ["web apps, desktop apps and business websites", true],
-      [", turning messy workflows into simple screens.", false],
+      [" at Greatbear Ventures and for my own clients.", false],
     ],
   ],
+
 
 };
 

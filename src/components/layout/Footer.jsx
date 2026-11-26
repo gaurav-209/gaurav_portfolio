@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { site, navLinks } from "@/data/site";
-import { Wordmark, LocalTime } from "@/components/layout/FooterBits";
+import { Wordmark, LocalTime, CookieSettingsButton } from "@/components/layout/FooterBits";
 
 const pages = [...navLinks, { label: "FAQ", href: "/#faq" }, { label: "Contact", href: "/#contact" }];
 const elsewhere = [
@@ -88,12 +88,18 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className="mt-8 flex flex-col gap-1.5 text-xs text-[#8f8a82] sm:flex-row sm:justify-between">
+        <div className="mt-8 flex flex-col gap-1.5 text-xs text-[#8f8a82] sm:flex-row sm:justify-between">
           <span>
             © {year} {site.name}. All rights reserved.
           </span>
-          <span>{site.title} · React · Node.js · Electron</span>
-        </p>
+          <span className="flex flex-wrap gap-x-4 gap-y-1">
+            <Link href="/privacy" className="transition-colors hover:text-[#F47B20]">
+              Privacy
+            </Link>
+            <CookieSettingsButton className="transition-colors hover:text-[#F47B20]" />
+            <span>{site.title} · React · Node.js · Electron</span>
+          </span>
+        </div>
       </div>
 
       {/* Giant name, cropped by the bottom edge */}

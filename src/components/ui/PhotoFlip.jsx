@@ -31,7 +31,7 @@ export default function PhotoFlip({ front, back }) {
     const aboutSlot = wrap.querySelector('[data-photo-slot="about"]');
     if (!heroSlot || !aboutSlot) return;
 
-    let hero, about, end, raf = 0;
+    let hero, about, end, midScale = 0.05, raf = 0;
 
     const update = () => {
       raf = 0;
@@ -48,8 +48,9 @@ export default function PhotoFlip({ front, back }) {
       // Vertical follows scroll linearly, so the card holds its height on screen instead of bobbing;
       // sideways movement, size and the flip use the eased value.
       el.style.transform = `translate(${(about.x - hero.x) * e}px, ${(about.y - hero.y) * p}px) scale(${1 + (about.w / hero.w - 1) * e})`;
-      // Flip, with a slight lift mid-flight.
-      flip.style.transform = `perspective(1400px) rotateY(${180 * e}deg) scale(${1 + 0.05 * Math.sin(Math.PI * e)})`;
+      // Flip. On wide screens it lifts slightly mid-flight; on phones, where the card fills the width and
+      // starts low on the screen, it dips smaller mid-flight instead so the whole card stays in view.
+      flip.style.transform = `perspective(1400px) rotateY(${180 * e}deg) scale(${1 + midScale * Math.sin(Math.PI * e)})`;
     };
 
     // Slot positions relative to the wrapper; re-measured whenever the layout changes.
@@ -63,6 +64,7 @@ export default function PhotoFlip({ front, back }) {
       about = rel(aboutSlot);
       const aboutBox = aboutSlot.getBoundingClientRect();
       end = Math.max(1, aboutBox.top + window.scrollY + aboutBox.height / 2 - window.innerHeight * (0.5 + SETTLE));
+      midScale = window.innerWidth < 1024 ? -0.2 : 0.05;
       update();
     };
 

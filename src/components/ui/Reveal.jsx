@@ -1,13 +1,18 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
+// Fades its children in when they scroll into view.
+// Content is visible in the server HTML; only once this code runs (before the browser paints) does an
+// element that is still below the screen get "armed" (hidden) and then faded in on scroll. Anything already
+// on screen just stays visible, and if JavaScript fails to load nothing is ever hidden.
 export default function Reveal({ children, className = "", delay = 0 }) {
   const ref = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || el.getBoundingClientRect().top < window.innerHeight) return; // already in view: leave it shown
+    el.classList.add("armed");
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

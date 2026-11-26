@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 
@@ -66,6 +67,7 @@ function Canvas({ skills, lines, degree, posKey, className, focus, selectedId, c
           <button
             key={skill.id}
             type="button"
+            data-skill={skill.id}
             onClick={() => onSelect(skill.id)}
             onPointerEnter={(e) => e.pointerType === "mouse" && onHover(skill.id)}
             onPointerLeave={() => onHover(null)}
@@ -104,6 +106,105 @@ const chip =
   "inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-[oklch(25%_0.006_56)] px-3 py-1.5 text-xs md:text-sm text-[#f5f2ed] transition-colors hover:border-[#F47B20]/70 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F47B20]";
 const label = "mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8f8a82]";
 
+// lg and up shows the details under the canvas; below that they open in a popup sheet.
+const desktopQuery = "(min-width: 1024px)";
+const subscribeDesktop = (cb) => {
+  const mq = window.matchMedia(desktopQuery);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+const useIsDesktop = () => useSyncExternalStore(subscribeDesktop, () => window.matchMedia(desktopQuery).matches, () => true);
+
+// Phones: a bottom sheet with the selected skill's details. It covers only the lower part of the screen over
+// a light backdrop, so the lit-up constellation stays visible above it. It scrolls on its own and closes with a
+// swipe down (on the handle, or from the top of the content), a tap on the backdrop or Escape. Closing keeps
+// the skill selected.
+function SkillSheet({ onClose, children }) {
+  const ref = useRef(null);
+  const bodyRef = useRef(null); // the scrolling part under the handle
+  const drag = useRef(null); // { y, dy } while a swipe-down is in progress
+  const close = useRef(onClose);
+  useEffect(() => {
+    close.current = onClose;
+  });
+
+  useEffect(() => {
+    const before = document.activeElement;
+    ref.current?.focus({ preventScroll: true });
+    const onKey = (e) => e.key === "Escape" && close.current();
+    // The popup belongs to the Skills section: once the section has scrolled out of the visible area above
+    // the sheet (past it, or back up above it), close it.
+    const section = document.getElementById("skills");
+    const onScroll = () => {
+      if (!section) return;
+      const r = section.getBoundingClientRect();
+      if (r.bottom < window.innerHeight * 0.3 || r.top > window.innerHeight * 0.45) close.current();
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("scroll", onScroll);
+      before?.focus?.({ preventScroll: true });
+    };
+  }, []);
+
+  // Swipe down to close: only when the sheet is scrolled to its top, so scrolling the content still works.
+  const onTouchStart = (e) => {
+    const onHandle = e.target.closest("[data-sheet-handle]");
+    drag.current = onHandle || bodyRef.current.scrollTop <= 0 ? { y: e.touches[0].clientY, dy: 0 } : null;
+  };
+  const onTouchMove = (e) => {
+    if (!drag.current) return;
+    const dy = e.touches[0].clientY - drag.current.y;
+    if (dy < 0 && drag.current.dy === 0) return void (drag.current = null); // swiping up = scrolling content
+    drag.current.dy = Math.max(dy, 0);
+    ref.current.style.transition = "none";
+    ref.current.style.transform = `translateY(${drag.current.dy}px)`;
+  };
+  const onTouchEnd = () => {
+    if (!drag.current) return;
+    const { dy } = drag.current;
+    drag.current = null;
+    ref.current.style.transition = "transform 0.25s ease";
+    if (dy > 90) {
+      ref.current.style.transform = "translateY(100%)";
+      setTimeout(() => close.current(), 200);
+    } else ref.current.style.transform = "";
+  };
+
+  return createPortal(
+    <>
+      <button
+        type="button"
+        aria-label="Close details"
+        onClick={() => close.current()}
+        className="skill-sheet-backdrop fixed inset-0 z-[70] bg-black/25"
+      />
+      <div
+        ref={ref}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="skill-sheet-title"
+        tabIndex={-1}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        className="skill-sheet fixed inset-x-0 bottom-0 z-[71] flex max-h-[52svh] flex-col overflow-hidden rounded-t-3xl border-t border-white/10 bg-[oklch(16%_0.006_56)] text-[#f5f2ed] shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)] outline-none"
+      >
+        {/* Handle: drag it down to close */}
+        <div data-sheet-handle className="flex shrink-0 justify-center pb-3 pt-3">
+          <span className="h-1.5 w-10 rounded-full bg-white/25" aria-hidden />
+        </div>
+        <div ref={bodyRef} className="overflow-y-auto overscroll-contain px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+          {children}
+        </div>
+      </div>
+    </>,
+    document.body
+  );
+}
+
 export default function SkillConstellation({ skills, categories, activeSkillId, onSelect }) {
   const [hoverId, setHoverId] = useState(null);
   const byId = useMemo(() => Object.fromEntries(skills.map((s) => [s.id, s])), [skills]);
@@ -120,11 +221,74 @@ export default function SkillConstellation({ skills, categories, activeSkillId, 
   const degree = useMemo(() => Object.fromEntries(Object.entries(neighbours).map(([id, n]) => [id, n.length])), [neighbours]);
 
   const active = activeSkillId ? byId[activeSkillId] : null;
+  const isDesktop = useIsDesktop();
+  // Phones: the sheet can be closed while the skill stays selected (so its lines stay lit on the sky).
+  const [sheetClosedFor, setSheetClosedFor] = useState(null);
+  const sheetOpen = !!active && !isDesktop && sheetClosedFor !== active.id;
+
+  const select = (id) => {
+    if (!isDesktop) {
+      setSheetClosedFor(null);
+      // Tapping the selected star again just reopens its details instead of deselecting it.
+      if (active?.id === id) return;
+      // Bring the star up into the top part of the screen, above the sheet.
+      const star = [...document.querySelectorAll(`[data-skill="${id}"]`)].find((el) => el.offsetParent);
+      if (star) window.scrollBy({ top: star.getBoundingClientRect().top - window.innerHeight * 0.22, behavior: "smooth" });
+    }
+    onSelect(id);
+  };
   // Hovering previews a skill's connections; the selected skill (if any) drives the detail panel.
   const focus = (hoverId && byId[hoverId]) || active;
   const connected = useMemo(() => (focus ? new Set([focus.id, ...neighbours[focus.id].map((s) => s.id)]) : null), [focus, neighbours]);
 
-  const canvasProps = { skills, lines, degree, focus, selectedId: active?.id, connected, onSelect, onHover: setHoverId };
+  const canvasProps = { skills, lines, degree, focus, selectedId: active?.id, connected, onSelect: select, onHover: setHoverId };
+
+  // The selected skill's details: shown under the canvas on desktop and in a popup sheet on phones.
+  const renderDetails = (skill, headingId) => (
+      <div className="grid gap-5 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-10">
+        <div>
+          <p className="mb-1.5 inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: categoryColor[skill.category] }}>
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: categoryColor[skill.category] }} aria-hidden />
+            {categories.find((c) => c.id === skill.category)?.label}
+          </p>
+          <h4 id={headingId} className="font-heading text-2xl font-semibold text-[#f5f2ed] md:text-3xl">{skill.name}</h4>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#d6d0c6] md:text-base">{skill.usage}</p>
+        </div>
+        <div className="space-y-4">
+          {neighbours[skill.id].length > 0 && (
+            <div>
+              <p className={label}>Connects with</p>
+              <ul className="flex flex-wrap gap-2">
+                {neighbours[skill.id].map((s) => (
+                  <li key={s.id}>
+                    <button type="button" onClick={() => select(s.id)} className={chip}>
+                      <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: categoryColor[s.category] }} aria-hidden />
+                      {s.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div>
+            <p className={label}>Used in</p>
+            {skill.projects.length > 0 ? (
+              <ul className="flex flex-wrap gap-2" aria-label="Related projects">
+                {skill.projects.map((p) => (
+                  <li key={p.slug}>
+                    <Link href={`/projects/${p.slug}`} className={chip}>
+                      {p.name} <ArrowUpRight size={14} aria-hidden />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-[#b7b1a8]">Part of my everyday workflow on every project.</p>
+            )}
+          </div>
+        </div>
+      </div>
+  );
 
   return (
     <div className="overflow-clip rounded-2xl border border-white/10 bg-[oklch(16%_0.006_56)] shadow-[0_30px_80px_-40px_rgba(244,123,32,0.35)]">
@@ -149,64 +313,20 @@ export default function SkillConstellation({ skills, categories, activeSkillId, 
       <Canvas {...canvasProps} posKey="mpos" className="h-[1100px] lg:hidden" />
       <Canvas {...canvasProps} posKey="pos" className="hidden h-[640px] lg:block" />
 
-      {/* Sticky on mobile while a skill is selected, so its details stay visible below the tall canvas
-          (needs overflow-clip, not hidden, on ancestors). Capped and scrollable there so a big hub like
-          React doesn't cover the sky. */}
-      <div
-        className={`z-30 border-t border-white/10 bg-[oklch(16%_0.006_56/0.95)] px-5 py-5 backdrop-blur md:px-6 lg:static ${active ? "sticky bottom-0 max-h-[45svh] overflow-y-auto overscroll-contain lg:max-h-none lg:overflow-visible" : ""}`}
-        aria-live="polite"
-      >
-        {active ? (
-          <div className="grid gap-5 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-10">
-            <div>
-              <p className="mb-1.5 inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: categoryColor[active.category] }}>
-                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: categoryColor[active.category] }} aria-hidden />
-                {categories.find((c) => c.id === active.category)?.label}
-              </p>
-              <h4 className="font-heading text-2xl font-semibold text-[#f5f2ed] md:text-3xl">{active.name}</h4>
-              <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#d6d0c6] md:text-base">{active.usage}</p>
-            </div>
-            <div className="space-y-4">
-              {neighbours[active.id].length > 0 && (
-                <div>
-                  <p className={label}>Connects with</p>
-                  <ul className="flex flex-wrap gap-2">
-                    {neighbours[active.id].map((s) => (
-                      <li key={s.id}>
-                        <button type="button" onClick={() => onSelect(s.id)} className={chip}>
-                          <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: categoryColor[s.category] }} aria-hidden />
-                          {s.name}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div>
-                <p className={label}>Used in</p>
-                {active.projects.length > 0 ? (
-                  <ul className="flex flex-wrap gap-2" aria-label="Related projects">
-                    {active.projects.map((p) => (
-                      <li key={p.slug}>
-                        <Link href={`/projects/${p.slug}`} className={chip}>
-                          {p.name} <ArrowUpRight size={14} aria-hidden />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-sm text-[#b7b1a8]">Part of my everyday workflow on every project.</p>
-                )}
-              </div>
-            </div>
-          </div>
+      {/* Details panel under the canvas. On phones a selected skill opens in the popup sheet below instead. */}
+      <div className="border-t border-white/10 px-5 py-5 md:px-6" aria-live="polite">
+        {active && isDesktop ? (
+          renderDetails(active)
         ) : (
           <p className="flex items-center gap-2.5 text-sm text-[#b7b1a8]">
             <Sparkles size={16} className="shrink-0 text-[#F47B20]" aria-hidden />
-            Hover or select a technology to see how it connects, how I use it and which projects it powers.
+            {isDesktop
+              ? "Hover or select a technology to see how it connects, how I use it and which projects it powers."
+              : "Tap a technology to see how it connects, how I use it and which projects it powers."}
           </p>
         )}
       </div>
+      {sheetOpen && <SkillSheet onClose={() => setSheetClosedFor(active.id)}>{renderDetails(active, "skill-sheet-title")}</SkillSheet>}
     </div>
   );
 }

@@ -17,9 +17,10 @@ export default function PhotoCard({ src, alt, eyebrow, title, position = "50% 30
       />
       {(eyebrow || title) && (
         <>
-          {/* Darkens the bottom half so the caption reads over the photo */}
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 via-black/55 to-transparent" aria-hidden />
-          <div className="absolute inset-x-0 bottom-0 px-5 pb-5 text-white">
+          {/* Darkens the bottom half so the caption reads over the photo. Desktop only: on phones the hero
+              title and name sit right next to the card, so the caption would just repeat them. */}
+          <div className="absolute inset-x-0 bottom-0 hidden h-1/2 lg:block bg-gradient-to-t from-black/90 via-black/55 to-transparent" aria-hidden />
+          <div className="absolute inset-x-0 bottom-0 hidden px-5 pb-5 text-white lg:block">
             {eyebrow && <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)] mb-1">{eyebrow}</p>}
             {title && <p className="font-heading text-xl font-semibold">{title}</p>}
           </div>

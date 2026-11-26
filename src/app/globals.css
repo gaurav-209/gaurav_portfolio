@@ -228,12 +228,16 @@ body::before {
   box-shadow: 0 0 0.25em var(--color-accent);
 }
 
+/* Scroll-in fade. Content is visible by default; Reveal adds "armed" (hidden) only once its JavaScript is
+   running and the element is still below the screen, so a slow or failed script can never hide the page. */
 .reveal {
-  opacity: 0;
-  transform: translateY(24px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
-.reveal.in {
+.reveal.armed {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.reveal.armed.in {
   opacity: 1;
   transform: translateY(0);
 }
@@ -257,6 +261,12 @@ body::before {
 .constellation-flow { animation: constellation-flow 1.1s linear infinite; }
 
 /* Contact form: the rocket takes off when the message is sent */
+/* Skills: the phone popup slides up over a fading backdrop */
+@keyframes sheet-up { from { transform: translateY(100%); } }
+@keyframes sheet-fade { from { opacity: 0; } }
+.skill-sheet { animation: sheet-up 0.35s cubic-bezier(.22,.8,.3,1); }
+.skill-sheet-backdrop { animation: sheet-fade 0.25s ease; }
+
 @keyframes contact-launch {
   0% { transform: rotate(-12deg) translate(0, 0); opacity: 1; }
   100% { transform: rotate(-12deg) translate(140px, -60px); opacity: 0; }
@@ -264,7 +274,7 @@ body::before {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .reveal, .reveal.armed { opacity: 1; transform: none; transition: none; }
   .card-surface { transition: none; }
   * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }

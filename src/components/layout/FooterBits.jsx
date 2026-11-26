@@ -47,3 +47,14 @@ export function LocalTime({ timeZone = "Asia/Kolkata" }) {
   }, [timeZone]);
   return <span suppressHydrationWarning>{time ? `${time} IST` : "IST (UTC+5:30)"}</span>;
 }
+
+// Reopens the analytics cookie banner (see Analytics.jsx), so visitors can change their choice any time.
+// Hidden when analytics isn't set up, since there is then nothing to choose.
+export function CookieSettingsButton({ className = "" }) {
+  if (!process.env.NEXT_PUBLIC_GA_ID) return null;
+  return (
+    <button type="button" onClick={() => window.dispatchEvent(new Event("cookie-settings"))} className={className}>
+      Cookie settings
+    </button>
+  );
+}
