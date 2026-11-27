@@ -34,7 +34,7 @@ const bullet = <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--color-ac
 function Section({ id, eyebrow, title, children }) {
   return (
     <section aria-labelledby={id}>
-      {eyebrow && <p className="font-mono text-xs font-semibold tracking-[0.14em] uppercase text-accent-ink mb-2">{eyebrow}</p>}
+      {eyebrow && <p className="ui-eyebrow mb-2">{eyebrow}</p>}
       <h2 id={id} className="font-heading text-2xl md:text-3xl font-semibold tracking-tight mb-5">{title}</h2>
       {children}
     </section>
@@ -92,8 +92,8 @@ export default async function ProjectPage({ params }) {
         {/* 1. Header + quick facts */}
         <header className="mt-6 mb-8 md:mb-10">
           <div className="flex flex-wrap items-center gap-3 mb-3">
-            <p className="font-mono text-xs font-semibold tracking-[0.12em] uppercase text-accent-ink">{project.category}</p>
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider rounded-full border border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 text-accent-ink px-2.5 py-0.5">
+            <p className="ui-eyebrow">{project.category}</p>
+            <span className="ui-badge">
               {projectBadge(project)}
             </span>
           </div>
@@ -103,12 +103,12 @@ export default async function ProjectPage({ params }) {
           {(live || repo) && (
             <div className="flex flex-wrap gap-3 mt-6">
               {live && (
-                <a href={live} target="_blank" rel="noreferrer" className="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
+                <a href={live} target="_blank" rel="noreferrer" className="ui-btn ui-btn-sm btn-primary">
                   <ExternalLink size={15} aria-hidden /> {isWork ? `Visit ${new URL(live).hostname.replace(/^www\./, "")}` : "Live site"}
                 </a>
               )}
               {repo && (
-                <a href={repo} target="_blank" rel="noreferrer" className="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
+                <a href={repo} target="_blank" rel="noreferrer" className="ui-btn ui-btn-sm ui-btn-secondary">
                   <FaGithub size={15} aria-hidden /> Source code
                 </a>
               )}
@@ -116,10 +116,10 @@ export default async function ProjectPage({ params }) {
           )}
 
           {/* Cells stretch to fill each row, so any number of facts leaves no empty gaps. */}
-          <dl className="mt-8 flex flex-wrap gap-px overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--line)]">
+          <dl className="mt-8 flex flex-wrap gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--line)] shadow-[var(--shadow-card)]">
             {facts.map(([label, value]) => (
               <div key={label} className="flex-[1_1_160px] bg-[var(--color-base-100)] px-5 py-4">
-                <dt className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">{label}</dt>
+                <dt className="ui-eyebrow ui-eyebrow-muted">{label}</dt>
                 <dd className="mt-1 text-sm md:text-base font-semibold text-[var(--text)]">{value}</dd>
               </div>
             ))}
@@ -151,13 +151,13 @@ export default async function ProjectPage({ params }) {
                 <div className="grid md:grid-cols-2 gap-4">
                   {project.problem && (
                     <div className="card-surface p-6">
-                      <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">The problem</h3>
+                      <h3 className="ui-eyebrow ui-eyebrow-muted mb-2">The problem</h3>
                       <p className="leading-relaxed">{project.problem}</p>
                     </div>
                   )}
                   {project.solution && (
                     <div className="card-surface p-6 border-[var(--color-accent)]/40">
-                      <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-accent-ink mb-2">The solution</h3>
+                      <h3 className="ui-eyebrow mb-2">The solution</h3>
                       <p className="leading-relaxed">{project.solution}</p>
                     </div>
                   )}
@@ -236,10 +236,10 @@ export default async function ProjectPage({ params }) {
               <dl className="space-y-5">
                 {stack.map(([group, list]) => (
                   <div key={group}>
-                    <dt className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">{group}</dt>
+                    <dt className="ui-eyebrow ui-eyebrow-muted mb-2">{group}</dt>
                     <dd className="flex flex-wrap gap-2">
                       {list.map((t) => (
-                        <span key={t} className="font-mono text-xs px-3 py-1.5 rounded-full border border-[var(--line)] text-[var(--text)]">{t}</span>
+                        <span key={t} className="ui-tag">{t}</span>
                       ))}
                     </dd>
                   </div>
@@ -257,7 +257,7 @@ export default async function ProjectPage({ params }) {
               href={`/projects/${p.slug}`}
               className={`card-surface p-5 md:p-6 group flex flex-col gap-1 ${label === "Next project" ? "sm:items-end sm:text-right" : ""}`}
             >
-              <span className="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+              <span className="ui-eyebrow ui-eyebrow-muted inline-flex items-center gap-2">
                 {label === "Previous project" && <Icon size={14} aria-hidden />}
                 {label}
                 {label === "Next project" && <Icon size={14} aria-hidden />}
@@ -275,7 +275,7 @@ export default async function ProjectPage({ params }) {
           </div>
           <Link
             href="/#contact"
-            className="btn-primary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold shrink-0"
+            className="ui-btn btn-primary shrink-0"
           >
             <Mail size={17} aria-hidden /> Get in touch
           </Link>

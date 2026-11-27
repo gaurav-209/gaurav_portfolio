@@ -45,7 +45,7 @@ export default function ProjectsBrowser() {
         </ul>
       ) : (
         // A filter with nothing in it (e.g. "In progress" once everything ships)
-        <div className="rounded-3xl border border-dashed border-[var(--color-base-content)]/20 px-6 py-14 text-center" role="status">
+        <div className="rounded-[var(--radius-card)] border border-dashed border-[var(--color-base-content)]/20 px-6 py-14 text-center" role="status">
           <p className="font-heading text-2xl font-semibold tracking-tight">Nothing here right now.</p>
           <p className="mx-auto mt-2 max-w-sm text-[var(--text-muted)]">
             No {filter.label.toLowerCase()} projects at the moment. Check back soon, or browse everything else.
@@ -53,7 +53,7 @@ export default function ProjectsBrowser() {
           <button
             type="button"
             onClick={() => setFilter(filters[0])}
-            className="btn-primary mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold"
+            className="ui-btn ui-btn-sm btn-primary mt-6"
           >
             Show all projects
           </button>

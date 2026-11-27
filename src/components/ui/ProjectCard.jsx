@@ -32,7 +32,7 @@ export function ProjectVisual({ project, sizes, priority = false }) {
 }
 
 const iconLink =
-  "inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--line)] text-[var(--text-muted)] hover:text-accent-ink hover:border-[var(--color-accent)] transition";
+  "ui-icon-btn";
 
 export default function ProjectCard({ project }) {
   const href = `/projects/${project.slug}`;
@@ -40,16 +40,16 @@ export default function ProjectCard({ project }) {
   const { repo, live } = project.links ?? {};
 
   return (
-    <article className="card-surface overflow-hidden group flex flex-col h-full bg-[var(--color-base-100)]">
+    <article className="card-surface card-lift group flex h-full flex-col overflow-hidden">
       <Link href={href} className="relative block aspect-[16/10] shrink-0 overflow-hidden bg-[var(--surface)]" tabIndex={-1} aria-hidden>
         <ProjectVisual project={project} sizes="(max-width: 768px) 85vw, (max-width: 1024px) 50vw, 33vw" />
-        <span className="absolute top-3 left-3 font-mono text-[11px] font-semibold uppercase tracking-wider rounded-full bg-[var(--color-base-100)]/90 text-accent-ink px-2.5 py-1 backdrop-blur-sm">
+        <span className="ui-badge absolute left-3 top-3 bg-[var(--color-base-100)]/90 backdrop-blur-sm">
           {projectBadge(project)}
         </span>
       </Link>
 
       <div className="p-5 md:p-6 flex flex-col flex-1">
-        <p className="font-mono text-xs uppercase tracking-[0.12em] text-accent-ink font-semibold mb-2">
+        <p className="ui-eyebrow mb-2">
           {project.category}
           {project.year && <span className="text-[var(--text-muted)]"> · {project.year}</span>}
         </p>
@@ -60,7 +60,7 @@ export default function ProjectCard({ project }) {
 
         {project.highlight && (
           <div className="mt-4 rounded-xl border-l-2 border-[var(--color-accent)] bg-[var(--surface)] px-3.5 py-2.5">
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-accent-ink">
+            <p className="ui-eyebrow">
               {project.kind === "work" ? "My part" : "Highlight"}
             </p>
             <p className="mt-0.5 text-sm leading-snug text-[var(--text)]">{project.highlight}</p>
@@ -71,7 +71,7 @@ export default function ProjectCard({ project }) {
           {tags.length > 0 && (
             <ul className="flex flex-wrap gap-2 mb-5" aria-label="Key technologies">
               {tags.map((t) => (
-                <li key={t} className="font-mono text-xs px-2.5 py-1 rounded-full border border-[var(--line)] text-[var(--text-muted)]">{t}</li>
+                <li key={t} className="ui-tag">{t}</li>
               ))}
             </ul>
           )}

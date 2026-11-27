@@ -4,7 +4,7 @@ import Image from "next/image";
 // Hover zoom follows the nearest `.group` (the TiltCard around it).
 export default function PhotoCard({ src, alt, eyebrow, title, position = "50% 30%", priority = false }) {
   return (
-    <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-[var(--line)] bg-[var(--surface)] shadow-[0_30px_60px_-30px_rgba(37,52,63,0.45)]">
+    <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--surface)] shadow-[var(--shadow-photo)]">
       <div className="absolute -top-10 -right-10 h-36 w-36 rounded-full border border-[var(--color-accent)]/40" aria-hidden />
       <Image
         src={src}

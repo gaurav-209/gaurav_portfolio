@@ -13,7 +13,7 @@ export default function NotFound() {
   return (
     <div className="flex min-h-[100svh] items-center px-5 pb-16 pt-28 md:px-8">
       <div className="container-wide">
-        <p className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-accent-ink">Error 404</p>
+        <p className="ui-eyebrow">Error 404</p>
         <h1 className="hero-title mt-4 text-[clamp(3rem,12vw,7rem)] leading-[0.95]">
           Lost in
           <span className="block">
@@ -26,25 +26,25 @@ export default function NotFound() {
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/" className="btn-primary inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold">
+          <Link href="/" className="ui-btn btn-primary">
             <ArrowLeft size={17} aria-hidden /> Back to home
           </Link>
           <Link
             href="/projects"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-[var(--color-accent)] px-6 py-2.5 font-semibold text-accent-ink transition hover:bg-[var(--color-accent)]/10"
+            className="ui-btn ui-btn-secondary"
           >
             See all projects <ArrowRight size={17} aria-hidden />
           </Link>
         </div>
 
         <div className="mt-12 max-w-2xl border-t border-[var(--line)] pt-6">
-          <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">Popular case studies</p>
+          <p className="ui-eyebrow ui-eyebrow-muted mb-3">Popular case studies</p>
           <ul className="flex flex-wrap gap-2">
             {featuredProjects.slice(0, 4).map((p) => (
               <li key={p.slug}>
                 <Link
                   href={`/projects/${p.slug}`}
-                  className="inline-block rounded-full border border-[var(--line)] px-3.5 py-1.5 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-accent-ink"
+                  className="ui-chip px-3.5 py-1.5 text-sm"
                 >
                   {p.name}
                 </Link>
@@ -53,7 +53,7 @@ export default function NotFound() {
             <li>
               <Link
                 href="/#contact"
-                className="inline-block rounded-full border border-[var(--line)] px-3.5 py-1.5 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-accent-ink"
+                className="ui-chip px-3.5 py-1.5 text-sm"
               >
                 Contact me
               </Link>

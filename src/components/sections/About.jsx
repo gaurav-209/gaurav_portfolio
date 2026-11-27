@@ -11,7 +11,7 @@ export default function About() {
   const location = `${place[0]}, ${place.at(-1)}`;
 
   return (
-    <section className="section-pad min-h-[100svh] flex items-center" id="about" aria-labelledby="about-heading">
+    <section className="section-pad min-h-[100svh] flex items-center" id="about" data-anchor-offset="-72" aria-labelledby="about-heading">
       <div className="container-wide grid lg:grid-cols-[1fr_18rem_1fr] xl:grid-cols-[1fr_22rem_1fr] gap-12 lg:gap-10 xl:gap-14 items-center">
         {/* Left: name, role, where I work */}
         <div>
@@ -84,13 +84,13 @@ export default function About() {
               hero button moved here. Desktop: the hero keeps "Explore My Work", so "Download resume" is the main one. */}
           <Reveal delay={120}>
             <div className="mt-6 grid max-w-sm grid-cols-2 gap-2.5 lg:flex lg:max-w-none lg:flex-wrap lg:items-center lg:gap-3">
-              <a href="#work" className="btn-primary group inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2.5 text-[13px] font-semibold lg:hidden">
+              <a href="#work" className="ui-btn ui-btn-sm btn-primary group px-3 text-[13px] lg:hidden">
                 Explore My Work <ArrowDown size={16} className="transition-transform group-hover:translate-y-0.5" aria-hidden />
               </a>
               <a
                 href={site.resume}
                 download
-                className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border-2 border-[var(--color-accent)] px-3 py-2 text-[13px] font-semibold lg:gap-2 lg:px-5 lg:text-sm lg:shadow-[0_12px_26px_-12px_rgba(244,123,32,0.7)] text-accent-ink transition hover:bg-[var(--color-accent)]/10 lg:border-transparent lg:bg-[linear-gradient(135deg,#F47B20,#EA580C)] lg:py-2.5 lg:text-white lg:[text-shadow:0_1px_1px_rgba(0,0,0,0.25)] lg:hover:bg-[linear-gradient(135deg,#F47B20,#EA580C)] lg:hover:brightness-110"
+                className="ui-btn ui-btn-sm ui-btn-secondary px-3 text-[13px] lg:border-transparent lg:bg-[linear-gradient(135deg,#F47B20,#EA580C)] lg:px-[1.15rem] lg:text-[14px] lg:text-white lg:shadow-[0_12px_26px_-12px_rgba(244,123,32,0.7)] lg:[text-shadow:0_1px_1px_rgba(124,45,18,0.35)] lg:hover:bg-[linear-gradient(135deg,#F47B20,#EA580C)] lg:hover:brightness-105"
               >
                 Download resume <Download size={16} aria-hidden />
               </a>

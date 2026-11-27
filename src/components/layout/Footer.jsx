@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { site, navLinks } from "@/data/site";
-import { Wordmark, LocalTime, CookieSettingsButton } from "@/components/layout/FooterBits";
+import { LocalTime, CookieSettingsButton } from "@/components/layout/FooterBits";
 
 const pages = [...navLinks, { label: "FAQ", href: "/#faq" }, { label: "Contact", href: "/#contact" }];
 const elsewhere = [
@@ -13,14 +13,13 @@ const heading = "mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.
 const link = "group inline-flex items-center gap-1 text-[15px] text-[#e9e4dc] transition-colors hover:text-[#F47B20]";
 
 // The site ends under the night sky of the Skills section: a dark card that rises over the page,
-// a closing line, the usual links, a spinning back-to-top badge and the name as a giant outline
-// that lights up under the mouse.
+// a closing line, the usual links and a spinning back-to-top badge.
 export default function Footer() {
   const year = 2026; // fixed: pages are pre-rendered, so reading today's date isn't allowed at build time
 
   return (
     <footer className="constellation-sky relative mt-6 overflow-hidden rounded-t-[2rem] text-[#f5f2ed] md:rounded-t-[3rem]">
-      <div className="container-wide px-5 pt-10 md:px-8 md:pt-12">
+      <div className="container-wide px-5 pb-8 pt-10 md:px-8 md:pb-10 md:pt-12">
         {/* Closing line + back-to-top badge */}
         <div className="flex items-end justify-between gap-6">
           <div>
@@ -102,10 +101,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Giant name, cropped by the bottom edge */}
-      <div className="mt-2 translate-y-[20%] px-2">
-        <Wordmark text={site.name} />
-      </div>
     </footer>
   );
 }

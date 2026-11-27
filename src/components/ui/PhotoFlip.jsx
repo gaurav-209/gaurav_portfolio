@@ -15,10 +15,10 @@ import PhotoCard from "@/components/ui/PhotoCard";
 //   At rest ("hero" / "about") the ordinary flat card in that slot is shown and this moving card is
 //   hidden; only while "flying" is this 3D card shown (CSS in globals.css). The swap happens at the
 //   exact same position, so it's invisible, and nothing 3D stays on screen once you stop scrolling.
-// - Progress p = scroll from the top (0) to the landing point (1). The landing point is SETTLE of a
-//   screen height before the About slot is centred (negative = after), so it sets how much scrolling the
-//   flight takes: lower values give the flip more time.
-const SETTLE = -0.12;
+// - Progress p = scroll from the top (0) to the landing point (1): the moment the About section reaches the
+//   top of the screen, less LAND_GAP. To give the flip more time, make the spacer between Hero and About
+//   (page.js) taller. If you change LAND_GAP, change data-anchor-offset on the About section to match.
+const LAND_GAP = 72;
 
 export default function PhotoFlip({ front, back }) {
   const ref = useRef(null);
@@ -31,15 +31,27 @@ export default function PhotoFlip({ front, back }) {
     const aboutSlot = wrap.querySelector('[data-photo-slot="about"]');
     if (!heroSlot || !aboutSlot) return;
 
+    const aboutSection = aboutSlot.closest("section");
     let hero, about, end, midScale = 0.05, raf = 0;
+
+    // Slot positions relative to the wrapper. Read every frame, because on desktop About is pinned
+    // (sticky) for a while, so its slot's position on the page changes as you scroll.
+    const rel = (slot) => {
+      const w = wrap.getBoundingClientRect();
+      const b = slot.getBoundingClientRect();
+      return { x: b.left - w.left, y: b.top - w.top, w: b.width };
+    };
 
     const update = () => {
       raf = 0;
       const el = ref.current;
       const flip = el?.querySelector("[data-flip]");
       if (!flip || !hero) return;
+      about = rel(aboutSlot);
       const p = Math.min(Math.max(window.scrollY / end, 0), 1);
-      const at = p <= 0 ? "hero" : p >= 1 ? "about" : "flying";
+      // (within a pixel or two of the landing point counts as landed, so a link that stops right there
+      // shows the settled photo)
+      const at = p <= 0 ? "hero" : p >= 1 - 2 / end ? "about" : "flying";
       if (wrap.getAttribute("data-photo-at") !== at) wrap.setAttribute("data-photo-at", at);
       const e = p < 0.5 ? 2 * p * p : 1 - (-2 * p + 2) ** 2 / 2; // ease in-out
       el.style.left = `${hero.x}px`;
@@ -56,17 +68,13 @@ export default function PhotoFlip({ front, back }) {
       flip.style.transform = `perspective(1400px) rotateY(${180 * turn}deg) scale(${1 + midScale * Math.sin(Math.PI * turn)})`;
     };
 
-    // Slot positions relative to the wrapper; re-measured whenever the layout changes.
+    // Where the flight starts and how much scrolling it takes; re-measured whenever the layout changes.
     const measure = () => {
-      const w = wrap.getBoundingClientRect();
-      const rel = (slot) => {
-        const b = slot.getBoundingClientRect();
-        return { x: b.left - w.left, y: b.top - w.top, w: b.width };
-      };
       hero = rel(heroSlot);
       about = rel(aboutSlot);
-      const aboutBox = aboutSlot.getBoundingClientRect();
-      end = Math.max(1, aboutBox.top + window.scrollY + aboutBox.height / 2 - window.innerHeight * (0.5 + SETTLE));
+      // Land when the About section is LAND_GAP px below the top of the screen, so the photo settles into its
+      // place with breathing room under the navbar, then scrolls on with About (every screen size).
+      end = Math.max(1, (aboutSection ?? aboutSlot).getBoundingClientRect().top + window.scrollY - LAND_GAP);
       midScale = window.innerWidth < 1024 ? -0.2 : 0.05;
       update();
     };

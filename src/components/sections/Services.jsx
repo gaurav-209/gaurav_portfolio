@@ -35,14 +35,14 @@ function Details({ s, interactive = true }) {
       </ul>
       <div className="mt-auto pt-3 lg:pt-5">
         {/* label hidden on short phone screens to keep the card within the screen */}
-        <p className="mb-2 font-mono max-lg:[@media(max-height:780px)]:hidden text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">See it in</p>
+        <p className="ui-eyebrow ui-eyebrow-muted mb-2 max-lg:[@media(max-height:780px)]:hidden">See it in</p>
         <div className="flex flex-wrap gap-2">
           {s.proof.map((slug) => (
             <Link
               key={slug}
               href={`/projects/${slug}`}
               tabIndex={tab}
-              className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] px-3 py-1 text-xs font-medium transition-colors hover:border-[var(--color-accent)] hover:text-accent-ink"
+              className="ui-chip"
             >
               {nameOf[slug]} <ArrowUpRight size={12} aria-hidden />
             </Link>
@@ -52,7 +52,7 @@ function Details({ s, interactive = true }) {
           type="button"
           tabIndex={tab}
           onClick={() => startWith(s.topic)}
-          className="btn-primary group/btn mt-3 inline-flex lg:mt-5 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold"
+          className="ui-btn ui-btn-sm btn-primary group/btn mt-3 lg:mt-5"
         >
           Start a project like this
           <ArrowRight size={16} className="transition-transform group-hover/btn:translate-x-1" aria-hidden />
@@ -119,6 +119,13 @@ function Panels() {
     const onScroll = () => {
       const y = window.scrollY;
       const [a, b] = range();
+      // The site's own glides (navbar links, buttons) pass straight through.
+      if (window.__autoScrolling) {
+        lastY = y;
+        const i = y < a ? 0 : y > b ? n - 1 : indexAt(y);
+        setOpen((prev) => (prev === i ? prev : i));
+        return;
+      }
       if (Date.now() >= lockUntil) {
         // Any scroll that isn't one of our steps (a fast flick or fling, a glide already under way, the
         // keyboard) and lands between two panel stops, or jumps right over the panels, gets caught at the panel
@@ -163,6 +170,9 @@ function Panels() {
       e.preventDefault();
       e.stopImmediatePropagation();
       if (leaving || now < lockUntil || gap < BURST_GAP) return;
+      // Still gliding in between two panels (e.g. just arriving)? Settle on the panel being entered first.
+      const pos = (window.scrollY - range()[0]) / STEP;
+      if (Math.abs(pos - Math.round(pos)) * STEP > 2) return step(clampIndex(dir > 0 ? Math.floor(pos) : Math.ceil(pos)));
       step(i + dir);
     };
 
@@ -213,9 +223,9 @@ function Panels() {
               return (
                 <li
                   key={s.id}
-                  className={`relative min-h-0 overflow-hidden rounded-[1.75rem] border transition-[flex-grow,background-color,border-color,box-shadow] duration-500 ease-[cubic-bezier(.22,.8,.3,1)] basis-14 lg:basis-0 lg:rounded-[2rem] ${
+                  className={`relative min-h-0 overflow-hidden rounded-[var(--radius-card)] border transition-[flex-grow,background-color,border-color,box-shadow] duration-500 ease-[cubic-bezier(.22,.8,.3,1)] basis-14 lg:basis-0 ${
                     isOpen
-                      ? "grow lg:grow-[4] border-[var(--color-accent)]/40 bg-[var(--color-base-100)] shadow-[0_30px_60px_-34px_rgba(244,123,32,0.55)]"
+                      ? "grow lg:grow-[4] border-[var(--color-accent)]/40 bg-[var(--color-base-100)] shadow-[var(--shadow-accent)]"
                       : "grow-0 lg:grow cursor-pointer border-[var(--line)] bg-[var(--color-base-100)]/60 hover:border-[var(--color-accent)]/40"
                   }`}
                 >
@@ -230,7 +240,7 @@ function Panels() {
                       isOpen ? "pointer-events-none opacity-0" : "opacity-100"
                     }`}
                   >
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--color-accent)]/10 text-accent-ink lg:h-12 lg:w-12 lg:rounded-2xl">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[var(--radius-inner)] bg-[var(--color-accent)]/10 text-accent-ink lg:h-12 lg:w-12">
                       <Icon size={20} aria-hidden />
                     </span>
                     <span className="font-heading text-lg font-semibold tracking-tight lg:rotate-180 lg:whitespace-nowrap lg:text-xl lg:[writing-mode:vertical-rl]">

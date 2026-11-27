@@ -160,40 +160,48 @@ export default function JourneyTimeline({ items }) {
         const len = duration(item.start, item.end);
         return (
           <li key={`${item.company}-${item.role}`} className="relative grid pb-10 pl-11 last:pb-0 md:grid-cols-2 md:gap-x-32 md:pb-14 md:pl-0">
-            {/* Card */}
+            {/* Entry: open text (no card) tied to the road by a short connector line at the dot's height */}
             <div data-stop className={`md:row-start-1 ${left ? "md:col-start-1" : "md:col-start-2"}`}>
-              <article
-                className={`rounded-2xl border bg-[var(--color-base-100)] transition-opacity duration-500 ${
-                  earlier ? "border-dashed border-[var(--color-base-content)]/20 p-4 md:p-5" : "border-[var(--line)] p-5 md:p-6 shadow-[0_14px_30px_-22px_rgba(37,52,63,0.45)]"
-                } ${lit ? "opacity-100" : "opacity-50"}`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="font-mono text-xs font-semibold text-accent-ink md:hidden">
-                    {range(item.start, item.end)}
-                    {len && <span className="font-normal text-[var(--text-muted)]"> · {len}</span>}
-                  </p>
-                  <span
-                    className={`ml-auto shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
-                      earlier ? "border-[var(--line)] text-[var(--text-muted)]" : "border-[var(--color-accent)]/40 bg-[var(--color-accent)]/10 text-accent-ink"
-                    }`}
-                  >
-                    {label[item.type]}
-                  </span>
-                </div>
-                <h3 className={`mt-1 font-heading font-semibold leading-snug ${earlier ? "text-base" : "text-lg md:text-xl"}`}>{item.role}</h3>
-                <p className="mt-0.5 text-sm text-[var(--text-muted)]">
-                  {item.company}
-                  {item.location && ` · ${item.location}`}
+              <article className={`relative pt-5 transition-opacity duration-500 ${lit ? "opacity-100" : "opacity-50"}`}>
+                <span
+                  aria-hidden
+                  className={`absolute top-[28px] h-0 border-t-2 border-dashed transition-colors duration-500 ${
+                    lit ? "border-[var(--color-accent)]" : "border-[var(--line)]"
+                  } -left-[1.4rem] w-[1.05rem] ${left ? "md:left-auto md:-right-[calc(4rem-12px)] md:w-[calc(4rem-20px)]" : "md:-left-[calc(4rem-12px)] md:w-[calc(4rem-20px)]"}`}
+                />
+                <p className="ui-eyebrow -translate-y-1.5">{label[item.type]}</p>
+                {/* Phones: dates under the label (desktop shows them across the road) */}
+                <p className="-mt-0.5 font-mono text-xs text-[var(--text-muted)] md:hidden">
+                  {range(item.start, item.end)}
+                  {len && ` · ${len}`}
                 </p>
-                {item.summary && <p className="mt-2.5 text-sm leading-relaxed text-[var(--text-muted)]">{item.summary}</p>}
+                <h3 className={`mt-1.5 font-heading font-semibold leading-tight tracking-tight ${earlier ? "text-lg" : "text-2xl md:text-[1.75rem]"}`}>{item.role}</h3>
+                <p className={`mt-1 font-medium ${earlier ? "text-sm text-[var(--text-muted)]" : "text-[15px] text-accent-ink"}`}>
+                  {item.company}
+                  {item.location && <span className="font-normal text-[var(--text-muted)]"> · {item.location}</span>}
+                </p>
+                {item.summary && <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-[var(--text-muted)]">{item.summary}</p>}
+                {item.highlights?.length > 0 && (
+                  <ul className={`max-w-xl space-y-1.5 border-l-2 border-[var(--color-accent)]/30 pl-4 text-sm leading-relaxed ${earlier ? "mt-2.5" : "mt-4"}`}>
+                    {item.highlights.map((h) => (
+                      <li key={h}>{h}</li>
+                    ))}
+                  </ul>
+                )}
+                {item.tech?.length > 0 && (
+                  <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Technologies">
+                    {item.tech.map((t) => (
+                      <li key={t} className="ui-tag">
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 {item.projects && (
-                  <ul className="mt-4 flex flex-wrap gap-2" aria-label="Projects from this role">
+                  <ul className="mt-3 flex flex-wrap gap-2" aria-label="Projects from this role">
                     {item.projects.map((slug) => (
                       <li key={slug}>
-                        <Link
-                          href={`/projects/${slug}`}
-                          className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] px-3 py-1 text-xs font-medium text-[var(--text)] transition-colors hover:border-[var(--color-accent)] hover:text-accent-ink"
-                        >
+                        <Link href={`/projects/${slug}`} className="ui-chip">
                           {projectName[slug] ?? slug} <ArrowUpRight size={12} aria-hidden />
                         </Link>
                       </li>

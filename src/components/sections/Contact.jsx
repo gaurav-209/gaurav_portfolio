@@ -10,7 +10,7 @@ import { Check, Mail, Rocket } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const linkPill =
-  "inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--color-base-100)] px-3.5 py-2 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-accent-ink";
+  "ui-chip gap-2 bg-[var(--color-base-100)] px-3.5 py-2 text-sm";
 const topics = ["a website", "a web app", "a desktop app", "something else"];
 const MIN_MESSAGE = 10;
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -126,9 +126,9 @@ export default function Contact() {
             id="contact-form"
             onSubmit={onSubmit}
             noValidate
-            className="space-y-4 rounded-2xl border border-[var(--color-base-content)]/15 bg-[var(--color-base-100)] p-5 shadow-[0_20px_50px_-35px_rgba(37,52,63,0.45)] md:p-7"
+            className="card-surface space-y-4 p-5 md:p-7"
           >
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+            <p className="ui-eyebrow ui-eyebrow-muted">
               <span className="text-accent-ink">{"//"}</span> new message
             </p>
             {/* Honeypot: hidden from people, but bots fill it in, and the server then drops the message. */}

@@ -15,6 +15,9 @@ export default function Home() {
       {/* Hero + About share a wrapper so the photo card can fly (and flip) from one to the other. */}
       <div className="relative">
         <Hero />
+        {/* Extra room for the photo flight, so it flips slowly and lands just as About scrolls into place
+            (no pinning: the page keeps scrolling smoothly). Empty space; the flying photo crosses it. */}
+        <div aria-hidden className="h-[30svh]" />
         <About />
         <PhotoFlip front={photoCards.front} back={photoCards.back} />
       </div>

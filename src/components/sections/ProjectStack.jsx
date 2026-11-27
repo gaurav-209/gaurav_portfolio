@@ -9,16 +9,16 @@ import { ProjectVisual, projectBadge } from "@/components/ui/ProjectCard";
 const TOP = 96; // px below the top of the screen where cards stick (clears the floating navbar)
 const STEP = 16; // each later card sticks a little lower, so the edges of earlier cards peek out like a deck
 
-const chip = "rounded-full border border-[var(--line)] px-2.5 py-1 font-mono text-xs text-[var(--text-muted)]";
+const chip = "ui-tag";
 const iconLink =
-  "inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--line)] text-[var(--text-muted)] transition hover:border-[var(--color-accent)] hover:text-accent-ink";
+  "ui-icon-btn";
 
 function Card({ project, index, total }) {
   const href = `/projects/${project.slug}`;
   const tags = project.cardTech ?? Object.values(project.stack ?? {}).flat().slice(0, 3);
   const { repo, live } = project.links ?? {};
   return (
-    <article className="grid overflow-hidden rounded-3xl border border-[var(--line)] bg-[var(--color-base-100)] shadow-[0_-12px_40px_-24px_rgba(37,52,63,0.35)] md:h-[min(540px,calc(100svh-9rem))] md:grid-cols-[1fr_1.15fr]">
+    <article className="card-surface grid overflow-hidden shadow-[0_-12px_40px_-24px_rgba(37,52,63,0.35)] md:h-[min(540px,calc(100svh-9rem))] md:grid-cols-[1fr_1.15fr]">
       {/* Text */}
       <div className="order-2 flex flex-col p-5 md:order-1 md:p-9">
         <div className="flex items-center gap-3">
@@ -26,11 +26,11 @@ function Card({ project, index, total }) {
             {String(index + 1).padStart(2, "0")}
             <span className="text-[var(--text-muted)]"> / {String(total).padStart(2, "0")}</span>
           </span>
-          <span className="rounded-full bg-[var(--color-accent)]/10 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-accent-ink">
+          <span className="ui-badge">
             {projectBadge(project)}
           </span>
         </div>
-        <p className="mt-4 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+        <p className="ui-eyebrow ui-eyebrow-muted mt-4">
           {project.category}
           {project.year && ` · ${project.year}`}
         </p>
@@ -42,7 +42,7 @@ function Card({ project, index, total }) {
         <p className="mt-3 text-[15px] leading-relaxed text-[var(--text-muted)] md:text-base">{project.tagline}</p>
         {project.highlight && (
           <p className="mt-4 hidden border-l-2 border-[var(--color-accent)] pl-3 text-sm leading-snug md:block">
-            <span className="mb-0.5 block font-mono text-[10px] font-semibold uppercase tracking-wider text-accent-ink">
+            <span className="ui-eyebrow mb-0.5 block">
               {project.kind === "work" ? "My part" : "Highlight"}
             </span>
             {project.highlight}
@@ -56,7 +56,7 @@ function Card({ project, index, total }) {
           ))}
         </ul>
         <div className="mt-auto flex items-center justify-between gap-3 pt-6">
-          <Link href={href} className="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
+          <Link href={href} className="ui-btn ui-btn-sm btn-primary">
             Read case study <ArrowUpRight size={16} aria-hidden />
           </Link>
           <div className="flex gap-2">
@@ -77,7 +77,7 @@ function Card({ project, index, total }) {
       {/* Visual */}
       {/* Screenshots are 16:10, so keep that shape (centred in the column) rather than cropping them */}
       <Link href={href} tabIndex={-1} aria-hidden className="group order-1 flex items-center p-3 md:order-2 md:p-4 md:pl-0">
-        <span className="relative block aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+        <span className="relative block aspect-[16/10] w-full overflow-hidden rounded-[var(--radius-inner)] border border-[var(--line)] bg-[var(--surface)]">
           <ProjectVisual project={project} sizes="(max-width: 768px) 92vw, 55vw" />
         </span>
       </Link>
@@ -87,8 +87,8 @@ function Card({ project, index, total }) {
 
 function SeeAll({ rest, totalCount }) {
   return (
-    <article className="flex flex-col justify-center overflow-hidden rounded-3xl border border-[var(--line)] bg-[var(--color-base-100)] p-6 shadow-[0_-12px_40px_-24px_rgba(37,52,63,0.35)] md:h-[min(540px,calc(100svh-9rem))] md:p-10">
-      <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-accent-ink">
+    <article className="card-surface flex flex-col justify-center overflow-hidden p-6 shadow-[0_-12px_40px_-24px_rgba(37,52,63,0.35)] md:h-[min(540px,calc(100svh-9rem))] md:p-10">
+      <p className="ui-eyebrow">
         That&apos;s {totalCount - rest.length} of {totalCount}
       </p>
       <h3 className="mt-3 font-heading text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
@@ -110,7 +110,7 @@ function SeeAll({ rest, totalCount }) {
           </li>
         ))}
       </ul>
-      <Link href="/projects" className="btn-primary mt-7 inline-flex items-center gap-2 self-start rounded-full px-6 py-3 font-semibold">
+      <Link href="/projects" className="ui-btn btn-primary mt-7 self-start">
         See all {totalCount} projects <ArrowRight size={18} aria-hidden />
       </Link>
     </article>

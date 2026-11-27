@@ -110,7 +110,7 @@ export default function Navbar() {
         </div>
 
         {/* Right: Let's talk (desktop) / menu button (mobile) */}
-        <Link href="/#contact" className="btn-primary hidden md:inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold">
+        <Link href="/#contact" className="ui-btn ui-btn-sm btn-primary hidden md:inline-flex">
           Let&apos;s talk <ArrowUpRight size={16} aria-hidden />
         </Link>
 
@@ -130,7 +130,7 @@ export default function Navbar() {
       {open && (
         <div
           id="mobile-nav"
-          className="md:hidden mx-auto mt-2 max-w-5xl rounded-3xl border border-[var(--line)] bg-[var(--color-base-100)]/95 p-3 backdrop-blur-xl shadow-[0_20px_40px_-20px_rgba(37,52,63,0.5)]"
+          className="md:hidden mx-auto mt-2 max-w-5xl rounded-[var(--radius-card)] border border-[var(--line)] bg-[var(--color-base-100)]/95 p-3 backdrop-blur-xl shadow-[var(--shadow-card-hover)]"
         >
           <div className="flex flex-col">
             {navLinks.map((link) => (
@@ -149,7 +149,7 @@ export default function Navbar() {
             <Link
               href="/#contact"
               onClick={() => setOpen(false)}
-              className="btn-primary mt-2 inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-3 font-semibold"
+              className="ui-btn btn-primary mt-2"
             >
               Let&apos;s talk <ArrowUpRight size={17} aria-hidden />
             </Link>

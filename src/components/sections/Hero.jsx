@@ -66,7 +66,7 @@ export default function Hero() {
 
           <Reveal delay={180} className="hidden lg:block">
             <div className="mt-7 flex flex-wrap items-center justify-center gap-4 lg:mt-9 lg:justify-start">
-              <a href="#work" className="btn-primary group inline-flex items-center gap-2 rounded-full px-8 py-4 font-semibold">
+              <a href="#work" className="ui-btn ui-btn-lg btn-primary group">
                 Explore My Work <ArrowDown size={17} className="transition-transform group-hover:translate-y-0.5" aria-hidden />
               </a>
             </div>

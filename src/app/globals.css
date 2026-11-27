@@ -63,7 +63,13 @@
   --accent-contrast: var(--color-accent-content);
   --line: color-mix(in oklch, var(--color-base-content) 15%, transparent);
   --nav-bg: color-mix(in oklch, var(--color-base-100) 90%, transparent);
-  --radius-card: 1rem;
+  /* One set of surface tokens for the whole site (light sections). */
+  --radius-card: 1.5rem; /* every card, panel and big container */
+  --radius-inner: 1rem; /* images and boxes inside a card, icon tiles */
+  --shadow-card: 0 18px 40px -28px rgba(37, 52, 63, 0.45); /* resting card */
+  --shadow-card-hover: 0 28px 50px -28px rgba(37, 52, 63, 0.5); /* card you can click, on hover */
+  --shadow-accent: 0 28px 56px -32px rgba(244, 123, 32, 0.6); /* the one highlighted/open card */
+  --shadow-photo: 0 30px 60px -30px rgba(37, 52, 63, 0.45); /* portrait photo cards */
   --radius-control: 0.75rem;
   --radius-pill: 9999px;
 }
@@ -106,6 +112,13 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 
 p { line-height: 1.7; }
+/* A small label used as a heading (e.g. "THE PROBLEM") keeps the label look; the heading rule above would
+   otherwise give it the heading font. */
+:is(h1, h2, h3, h4, h5, h6).ui-eyebrow {
+  font-family: var(--font-mono);
+  letter-spacing: 0.18em;
+  line-height: 1.5;
+}
 
 /* Space above and below every section (so between two sections it's doubled). */
 .section-pad {
@@ -121,16 +134,117 @@ p { line-height: 1.7; }
   width: 100%;
 }
 
-.card-surface {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-card);
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-.card-surface:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in oklch, var(--accent) 45%, transparent);
-  box-shadow: 0 20px 40px -24px color-mix(in oklch, var(--color-base-content) 25%, transparent);
+/* ---------- Shared building blocks ----------
+   Use these instead of one-off classes so every card, button, chip and label looks the same.
+   In @layer components so Tailwind utilities (mt-4, lg:hidden, px-3 …) can still adjust a single use. */
+@layer components {
+  /* Card: white surface, hairline border, soft shadow. Add .card-lift for cards you can click. */
+  .card-surface {
+    background: var(--color-base-100);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in oklch, var(--accent) 45%, transparent);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* Buttons: one pill shape. Sizes: default, .ui-btn-sm, .ui-btn-lg. Fill with .btn-primary (below) or use
+     .ui-btn-secondary for the outlined orange version. Both have a 2px border so they line up in a row. */
+  .ui-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+  .ui-btn-sm { padding: 0.5rem 1.15rem; font-size: 0.875rem; }
+  .ui-btn-lg { padding: 0.9rem 2rem; font-size: 1rem; }
+  .ui-btn-secondary {
+    border-color: var(--color-accent);
+    color: var(--color-accent-ink);
+    background: transparent;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  .ui-btn-secondary:hover {
+    background: color-mix(in oklch, var(--color-accent) 10%, transparent);
+    transform: translateY(-1px);
+  }
+
+  /* Small rounded link to a project/page ("See it in", "Used in"…). */
+  .ui-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .ui-chip:hover { border-color: var(--color-accent); color: var(--color-accent-ink); }
+
+  /* Technology tag (not a link). */
+  .ui-tag {
+    display: inline-block;
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    padding: 0.25rem 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* Small uppercase label above a heading or list ("SEE IT IN", "THE PROBLEM", "ERROR 404"…). */
+  .ui-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-accent-ink);
+  }
+  .ui-eyebrow-muted { color: var(--text-muted); }
+
+  /* Status badge ("WORK", "PERSONAL", "FULL-TIME"…). */
+  .ui-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.2rem 0.65rem;
+    background: color-mix(in oklch, var(--color-accent) 12%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-accent-ink);
+  }
+
+  /* Round icon-only link (live site, GitHub…). */
+  .ui-icon-btn {
+    display: inline-flex;
+    height: 2.5rem;
+    width: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    color: var(--text-muted);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .ui-icon-btn:hover { border-color: var(--color-accent); color: var(--color-accent-ink); }
 }
 
 /* ---------- Site background ----------
@@ -300,7 +414,7 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal, .reveal.armed { opacity: 1; transform: none; transition: none; }
-  .card-surface { transition: none; }
+  .card-surface, .ui-btn-secondary { transition: none; }
   * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
