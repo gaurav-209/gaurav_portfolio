@@ -72,6 +72,11 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 4rem; /* fixed navbar height (h-16) */
 }
+/* While Lenis smooth-scrolls the page (SmoothScroll.jsx), the browser's own smooth scrolling must be off,
+   or every frame Lenis sets would be animated again and the page would stutter. */
+html.lenis {
+  scroll-behavior: auto !important;
+}
 /* Page base colour (shows on over-scroll). It lives on <html>, underneath the fixed gradient layer
    (body::before). [data-theme] makes it win over daisyUI's own :root/[data-theme] background. */
 html[data-theme] {
@@ -231,11 +236,11 @@ body::before {
 /* Scroll-in fade. Content is visible by default; Reveal adds "armed" (hidden) only once its JavaScript is
    running and the element is still below the screen, so a slow or failed script can never hide the page. */
 .reveal {
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition: opacity 0.55s ease-out, transform 0.55s ease-out;
 }
 .reveal.armed {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(16px);
 }
 .reveal.armed.in {
   opacity: 1;
@@ -261,6 +266,26 @@ body::before {
 .constellation-flow { animation: constellation-flow 1.1s linear infinite; }
 
 /* Contact form: the rocket takes off when the message is sent */
+/* Hero entrance on phones/tablets: the photo first, then the title slides in from the left and right
+   (the "how I work" line then types itself, see Typewriter.jsx). Desktop keeps its usual fade-in. */
+@media (max-width: 1023px) {
+  .hero-photo-in { animation: hero-photo 0.7s cubic-bezier(.22,.8,.3,1) both; }
+  .hero-from-left { animation: hero-left 0.8s cubic-bezier(.22,.8,.3,1) 0.55s both; }
+  .hero-from-right { animation: hero-right 0.8s cubic-bezier(.22,.8,.3,1) 0.75s both; }
+}
+@keyframes hero-photo { from { opacity: 0; transform: translateY(24px) scale(0.92); } }
+@keyframes hero-left { from { opacity: 0; transform: translateX(-70vw); } }
+@keyframes hero-right { from { opacity: 0; transform: translateX(70vw); } }
+.typewriter-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin: 0 -1px -0.2em; /* takes no width, so centred text doesn't shift while typing */
+  background: var(--color-accent);
+  animation: caret-blink 0.9s steps(1) infinite;
+}
+@keyframes caret-blink { 50% { opacity: 0; } }
+
 /* Skills: the phone popup slides up over a fading backdrop */
 @keyframes sheet-up { from { transform: translateY(100%); } }
 @keyframes sheet-fade { from { opacity: 0; } }

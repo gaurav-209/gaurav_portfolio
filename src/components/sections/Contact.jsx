@@ -210,6 +210,7 @@ export default function Contact() {
                 </span>
               </span>
               <textarea
+                data-lenis-prevent
                 data-step="message"
                 name="message"
                 rows={3}

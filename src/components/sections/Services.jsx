@@ -7,6 +7,7 @@ import { services } from "@/data/services";
 import { projects } from "@/data/projects";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
+import { smoothScrollTo } from "@/lib/scroll";
 
 const icons = { "web-apps": LayoutDashboard, "desktop-apps": MonitorSmartphone, websites: Globe, apis: Server };
 const nameOf = Object.fromEntries(projects.map((p) => [p.slug, p.name]));
@@ -15,16 +16,16 @@ const num = (i) => String(i + 1).padStart(2, "0");
 // Jump to the contact form with this service's topic already picked (Contact listens for the event).
 const startWith = (topic) => {
   window.dispatchEvent(new CustomEvent("contact:topic", { detail: topic }));
-  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+  smoothScrollTo(document.getElementById("contact"));
 };
 
-// What a service says: summary, points, proof projects and the "start" button. Shared by both layouts.
+// What a service says: summary, points, proof projects and the "start" button.
 function Details({ s, interactive = true }) {
   const tab = interactive ? undefined : -1;
   return (
     <>
-      <p className="mt-2 leading-relaxed text-[var(--text-muted)]">{s.summary}</p>
-      <ul className="mt-4 space-y-1.5 text-[15px]">
+      <p className="mt-1.5 text-[15px] leading-relaxed text-[var(--text-muted)] lg:mt-2 lg:text-base">{s.summary}</p>
+      <ul className="mt-3 space-y-1 text-[14px] lg:mt-4 lg:space-y-1.5 lg:text-[15px]">
         {s.points.map((pt) => (
           <li key={pt} className="flex gap-2.5">
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent)]" aria-hidden />
@@ -32,8 +33,9 @@ function Details({ s, interactive = true }) {
           </li>
         ))}
       </ul>
-      <div className="mt-auto pt-5">
-        <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">See it in</p>
+      <div className="mt-auto pt-3 lg:pt-5">
+        {/* label hidden on short phone screens to keep the card within the screen */}
+        <p className="mb-2 font-mono max-lg:[@media(max-height:780px)]:hidden text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">See it in</p>
         <div className="flex flex-wrap gap-2">
           {s.proof.map((slug) => (
             <Link
@@ -50,7 +52,7 @@ function Details({ s, interactive = true }) {
           type="button"
           tabIndex={tab}
           onClick={() => startWith(s.topic)}
-          className="btn-primary group/btn mt-5 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold"
+          className="btn-primary group/btn mt-3 inline-flex lg:mt-5 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold"
         >
           Start a project like this
           <ArrowRight size={16} className="transition-transform group-hover/btn:translate-x-1" aria-hidden />
@@ -60,165 +62,205 @@ function Details({ s, interactive = true }) {
   );
 }
 
-// Phones/tablets: a 3D card carousel. The current card faces you; its neighbours turn away on either side.
-// Swipe or tap a side card to switch. With reduced motion the cards still change, just without animation.
-function Carousel() {
-  const [index, setIndex] = useState(0);
-  const start = useRef(null);
-  const go = (i) => setIndex(Math.min(Math.max(i, 0), services.length - 1));
-
-  const onPointerDown = (e) => (start.current = e.clientX);
-  const onPointerUp = (e) => {
-    if (start.current == null) return;
-    const dx = e.clientX - start.current;
-    start.current = null;
-    if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1));
-  };
-
-  return (
-    <div className="lg:hidden" role="region" aria-roledescription="carousel" aria-label="Services">
-      <div
-        className="relative h-[38rem] touch-pan-y select-none [perspective:1200px] sm:h-[34rem]"
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-        onPointerCancel={() => (start.current = null)}
-      >
-        {services.map((s, i) => {
-          const offset = i - index;
-          const away = Math.abs(offset);
-          const Icon = icons[s.id];
-          return (
-            <article
-              key={s.id}
-              aria-hidden={offset !== 0}
-              inert={offset !== 0}
-              onClick={offset !== 0 ? () => go(i) : undefined}
-              className={`absolute inset-y-0 left-1/2 flex w-[84%] max-w-sm flex-col rounded-[2rem] border bg-[var(--color-base-100)] p-5 sm:p-6 transition-[transform,opacity,box-shadow] duration-500 ease-[cubic-bezier(.22,.8,.3,1)] ${
-                offset === 0
-                  ? "border-[var(--color-accent)]/40 shadow-[0_30px_60px_-30px_rgba(244,123,32,0.55)]"
-                  : "cursor-pointer border-[var(--line)] shadow-[0_20px_40px_-30px_rgba(37,52,63,0.45)]"
-              }`}
-              style={{
-                transform: `translateX(calc(-50% + ${offset * 72}%)) rotateY(${offset * -38}deg) scale(${1 - Math.min(away, 2) * 0.12})`,
-                zIndex: 10 - away,
-                opacity: away > 1 ? 0 : 1,
-              }}
-            >
-              <div className="flex items-start justify-between">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--color-accent)] text-white">
-                  <Icon size={22} aria-hidden />
-                </span>
-                <span className="font-mono text-sm text-[var(--text-muted)]">{num(i)}</span>
-              </div>
-              <h3 className="mt-5 font-heading text-2xl font-semibold tracking-tight">{s.title}</h3>
-              <Details s={s} interactive={offset === 0} />
-            </article>
-          );
-        })}
-      </div>
-      <p className="sr-only" aria-live="polite">
-        Service {index + 1} of {services.length}: {services[index].title}
-      </p>
-    </div>
-  );
-}
-
-// Desktop: expanding panels driven by scroll. The row pins in the middle of the screen while you scroll
-// through a tall track, and each stretch of scrolling opens the next panel (the slim ones show the icon,
-// number and the title running vertically). Clicking or tabbing to a slim panel scrolls to its stretch.
-const SCROLL_PER_PANEL = 0.55; // screen heights of scrolling per panel
+// One design on every screen: expanding panels, side by side on desktop and stacked on phones/tablets.
+// The section pins while you're in it, and each scroll (one wheel flick, trackpad swipe or finger swipe)
+// opens exactly the next or previous panel, never more, however fast you scroll. Scrolling in from
+// above or below always stops at the first/last panel, so none can be skipped. After the last panel the
+// page carries on as normal.
+const STEP = 120; // page pixels between panels (the pinned stretch is STEP × (panels − 1))
+const LOCK_MS = 650; // after a step, ignore further scrolling this long so momentum can't skip a panel
+const BURST_GAP = 260; // wheel events closer than this belong to the same flick (trackpad momentum can pause ~200ms)
 
 function Panels() {
   const [open, setOpen] = useState(0);
   const trackRef = useRef(null);
+  const n = services.length;
 
-  // Which panel is open follows how far you've scrolled through the track.
+  // `goTo` is used by clicks/focus and set up inside the effect, where the scroll logic lives.
+  const goToRef = useRef(() => {});
+
   useEffect(() => {
     const track = trackRef.current;
+    const range = () => {
+      const a = track.getBoundingClientRect().top + window.scrollY;
+      return [a, a + STEP * (n - 1)];
+    };
+    const clampIndex = (i) => Math.min(Math.max(i, 0), n - 1);
+    const indexAt = (y) => clampIndex(Math.round((y - range()[0]) / STEP));
+    const inRange = (y = window.scrollY) => {
+      const [a, b] = range();
+      return y >= a - 2 && y <= b + 2;
+    };
+    const scrollToY = (y, immediate = false) => {
+      if (window.lenis) window.lenis.scrollTo(y, { immediate, force: true, duration: 0.55 });
+      else window.scrollTo({ top: y, behavior: immediate ? "instant" : "smooth" });
+    };
+    // Stop a phone's momentum scroll dead (it ignores scrollTo while flinging).
+    const killMomentum = () => {
+      if (window.lenis) return;
+      const el = document.documentElement;
+      el.style.overflow = "hidden";
+      setTimeout(() => (el.style.overflow = ""), 60);
+    };
+
+    let lockUntil = 0;
+    let lastWheel = 0;
+    const lock = () => (lockUntil = Date.now() + LOCK_MS);
+    const step = (i) => {
+      const [a] = range();
+      lock();
+      setOpen(i);
+      scrollToY(a + i * STEP);
+    };
+    goToRef.current = (i) => step(clampIndex(i));
+
+    // Keep the open panel in step with the scroll position, and catch fast scrolls arriving from outside.
+    let lastY = window.scrollY;
     const onScroll = () => {
-      const r = track.getBoundingClientRect();
-      const span = r.height - window.innerHeight; // scroll distance while the row is pinned
-      if (span <= 0) return;
-      const p = Math.min(Math.max(-r.top / span, 0), 0.9999);
-      const i = Math.floor(p * services.length);
+      const y = window.scrollY;
+      const [a, b] = range();
+      if (Date.now() >= lockUntil) {
+        // Any scroll that isn't one of our steps (a fast flick or fling, a glide already under way, the
+        // keyboard) and lands between two panel stops, or jumps right over the panels, gets caught at the panel
+        // it entered from, so no panel is ever skipped.
+        let stop = null;
+        if (lastY < a - 2 && y > b + 2) stop = 0; // flew right past from above
+        else if (lastY > b + 2 && y < a - 2) stop = n - 1; // flew right past from below
+        else if (y > a + 2 && y < b - 2) {
+          const pos = (y - a) / STEP;
+          if (Math.abs(pos - Math.round(pos)) * STEP > 2) stop = clampIndex(y > lastY ? Math.floor(pos) : Math.ceil(pos));
+        } else if (lastY < a - 2 && y >= b - 2 && y <= b + 2) stop = 0;
+        else if (lastY > b + 2 && y >= a - 2 && y <= a + 2) stop = n - 1;
+        if (stop !== null) {
+          killMomentum();
+          scrollToY(a + stop * STEP, true);
+          lastY = a + stop * STEP;
+          lock();
+          setOpen(stop);
+          return;
+        }
+      }
+      lastY = y;
+      // While a step is gliding to its panel, the scroll position still reads as the old panel for a moment;
+      // following it then would flip the cards back and forth (a visible blink), so wait for the step to land.
+      if (Date.now() < lockUntil) return;
+      const i = y < a ? 0 : y > b ? n - 1 : indexAt(y);
       setOpen((prev) => (prev === i ? prev : i));
     };
+
+    // Mouse wheel / trackpad: one flick = one panel. Registered in the capture phase so it runs before the
+    // smooth-scroll library and can stop the page from moving while a panel changes.
+    const onWheel = (e) => {
+      if (!inRange() || !e.deltaY) return;
+      const now = Date.now();
+      const gap = now - lastWheel;
+      lastWheel = now;
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const i = indexAt(window.scrollY);
+      const leaving = (dir > 0 && i === n - 1) || (dir < 0 && i === 0);
+      // At the first/last panel a *new* flick in that direction continues the page normally.
+      if (leaving && now >= lockUntil && gap >= BURST_GAP) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      if (leaving || now < lockUntil || gap < BURST_GAP) return;
+      step(i + dir);
+    };
+
+    // Touch: one swipe = one panel.
+    let touchY = null;
+    const onTouchStart = (e) => (touchY = inRange() ? e.touches[0].clientY : null);
+    const onTouchMove = (e) => {
+      if (touchY == null || !inRange()) return;
+      const dir = touchY - e.touches[0].clientY > 0 ? 1 : -1;
+      const i = indexAt(window.scrollY);
+      const leaving = (dir > 0 && i === n - 1) || (dir < 0 && i === 0);
+      if (!leaving || Date.now() < lockUntil) e.preventDefault();
+    };
+    const onTouchEnd = (e) => {
+      if (touchY == null) return;
+      const dy = touchY - e.changedTouches[0].clientY;
+      touchY = null;
+      if (Math.abs(dy) < 40 || Date.now() < lockUntil || !inRange()) return;
+      const dir = dy > 0 ? 1 : -1;
+      const i = indexAt(window.scrollY);
+      if ((dir > 0 && i === n - 1) || (dir < 0 && i === 0)) return;
+      step(i + dir);
+    };
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("wheel", onWheel, { capture: true });
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
     };
-  }, []);
-
-  // Jump to the middle of a panel's stretch of the track (for clicks and keyboard focus).
-  const goTo = (i) => {
-    const track = trackRef.current;
-    const span = track.offsetHeight - window.innerHeight;
-    const top = track.getBoundingClientRect().top + window.scrollY + span * ((i + 0.5) / services.length);
-    window.scrollTo({ top, behavior: "smooth" });
-  };
+  }, [n]);
 
   return (
-    <div ref={trackRef} className="hidden lg:block" style={{ height: `calc(100vh + ${services.length * SCROLL_PER_PANEL * 100}vh)` }}>
-      <div className="sticky top-0 flex h-screen items-center">
-      <Reveal className="w-full">
-      <ul className="flex h-[29rem] w-full gap-4">
-        {services.map((s, i) => {
-          const Icon = icons[s.id];
-          const isOpen = open === i;
-          return (
-            <li
-              key={s.id}
-              className={`relative overflow-hidden rounded-[2rem] border transition-[flex-grow,background-color,border-color] duration-500 ease-[cubic-bezier(.22,.8,.3,1)] ${
-                isOpen
-                  ? "grow-[4] basis-0 border-[var(--color-accent)]/40 bg-[var(--color-base-100)] shadow-[0_30px_60px_-34px_rgba(244,123,32,0.55)]"
-                  : "grow basis-0 cursor-pointer border-[var(--line)] bg-[var(--color-base-100)]/60 hover:border-[var(--color-accent)]/40"
-              }`}
-            >
-              {/* Slim state: a button that opens the panel (also how keyboard users switch) */}
-              <button
-                type="button"
-                onClick={() => goTo(i)}
-                onFocus={() => open !== i && goTo(i)}
-                aria-expanded={isOpen}
-                aria-controls={`service-${s.id}`}
-                className={`absolute inset-0 flex flex-col items-center justify-between py-8 text-left transition-opacity duration-300 ${
-                  isOpen ? "pointer-events-none opacity-0" : "opacity-100"
-                }`}
-              >
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--color-accent)]/10 text-accent-ink">
-                  <Icon size={22} aria-hidden />
-                </span>
-                <span className="font-heading text-xl font-semibold tracking-tight [writing-mode:vertical-rl] rotate-180 whitespace-nowrap">
-                  {s.title}
-                </span>
-                <span className="font-mono text-sm text-[var(--text-muted)]">{num(i)}</span>
-              </button>
+    <div ref={trackRef} style={{ height: `calc(100svh + ${STEP * (n - 1)}px)` }}>
+      <div className="sticky top-0 flex h-[100svh] items-center pb-3 pt-[4.75rem] lg:pb-0 lg:pt-0">
+        <Reveal className="h-full w-full lg:h-auto">
+          <ul className="flex h-full w-full flex-col gap-2 lg:h-[29rem] lg:flex-row lg:gap-4">
+            {services.map((s, i) => {
+              const Icon = icons[s.id];
+              const isOpen = open === i;
+              return (
+                <li
+                  key={s.id}
+                  className={`relative min-h-0 overflow-hidden rounded-[1.75rem] border transition-[flex-grow,background-color,border-color,box-shadow] duration-500 ease-[cubic-bezier(.22,.8,.3,1)] basis-14 lg:basis-0 lg:rounded-[2rem] ${
+                    isOpen
+                      ? "grow lg:grow-[4] border-[var(--color-accent)]/40 bg-[var(--color-base-100)] shadow-[0_30px_60px_-34px_rgba(244,123,32,0.55)]"
+                      : "grow-0 lg:grow cursor-pointer border-[var(--line)] bg-[var(--color-base-100)]/60 hover:border-[var(--color-accent)]/40"
+                  }`}
+                >
+                  {/* Slim state: a row on phones, a tall column with the title running up on desktop */}
+                  <button
+                    type="button"
+                    onClick={() => goToRef.current(i)}
+                    onFocus={() => open !== i && goToRef.current(i)}
+                    aria-expanded={isOpen}
+                    aria-controls={`service-${s.id}`}
+                    className={`absolute inset-x-0 top-0 flex h-14 items-center gap-3 px-4 text-left transition-opacity duration-300 lg:inset-0 lg:h-auto lg:flex-col lg:justify-between lg:px-0 lg:py-8 ${
+                      isOpen ? "pointer-events-none opacity-0" : "opacity-100"
+                    }`}
+                  >
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--color-accent)]/10 text-accent-ink lg:h-12 lg:w-12 lg:rounded-2xl">
+                      <Icon size={20} aria-hidden />
+                    </span>
+                    <span className="font-heading text-lg font-semibold tracking-tight lg:rotate-180 lg:whitespace-nowrap lg:text-xl lg:[writing-mode:vertical-rl]">
+                      {s.title}
+                    </span>
+                    <span className="ml-auto font-mono text-sm text-[var(--text-muted)] lg:ml-0">{num(i)}</span>
+                  </button>
 
-              {/* Open state: the full card */}
-              <div
-                id={`service-${s.id}`}
-                inert={!isOpen}
-                className={`flex h-full min-w-[26rem] flex-col p-8 transition-opacity duration-500 ${isOpen ? "opacity-100 delay-150" : "opacity-0"}`}
-              >
-                <div className="flex items-start justify-between">
-                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--color-accent)] text-white">
-                    <Icon size={22} aria-hidden />
-                  </span>
-                  <span className="font-mono text-sm text-[var(--text-muted)]">
-                    {num(i)} / {num(services.length - 1)}
-                  </span>
-                </div>
-                <h3 className="mt-6 font-heading text-3xl font-semibold tracking-tight">{s.title}</h3>
-                <Details s={s} interactive={isOpen} />
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-      </Reveal>
+                  {/* Open state: the full card */}
+                  <div
+                    id={`service-${s.id}`}
+                    inert={!isOpen}
+                    className={`flex h-full flex-col p-4 transition-opacity sm:p-5 lg:min-w-[26rem] lg:p-8 ${isOpen ? "opacity-100 duration-300 delay-100" : "opacity-0 duration-150"}`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--color-accent)] text-white lg:h-12 lg:w-12">
+                        <Icon size={22} aria-hidden />
+                      </span>
+                      <span className="font-mono text-sm text-[var(--text-muted)]">
+                        {num(i)} / {num(n - 1)}
+                      </span>
+                    </div>
+                    <h3 className="mt-3 font-heading text-xl font-semibold tracking-tight sm:text-2xl lg:mt-6 lg:text-3xl">{s.title}</h3>
+                    <Details s={s} interactive={isOpen} />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </Reveal>
       </div>
     </div>
   );
@@ -234,7 +276,6 @@ export default function Services() {
           accent="Help"
           subtitle="From first idea to a shipped product. Here's what you can bring to me, with the work that shows it."
         />
-        <Carousel />
         <Panels />
       </div>
     </section>

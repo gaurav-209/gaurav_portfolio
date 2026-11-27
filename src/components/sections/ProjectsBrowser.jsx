@@ -35,13 +35,30 @@ export default function ProjectsBrowser() {
           </button>
         ))}
       </div>
-      <ul className="grid gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3" aria-live="polite">
-        {items.map((p) => (
-          <li key={p.slug}>
-            <ProjectCard project={p} />
-          </li>
-        ))}
-      </ul>
+      {items.length > 0 ? (
+        <ul className="grid gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3" aria-live="polite">
+          {items.map((p) => (
+            <li key={p.slug}>
+              <ProjectCard project={p} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        // A filter with nothing in it (e.g. "In progress" once everything ships)
+        <div className="rounded-3xl border border-dashed border-[var(--color-base-content)]/20 px-6 py-14 text-center" role="status">
+          <p className="font-heading text-2xl font-semibold tracking-tight">Nothing here right now.</p>
+          <p className="mx-auto mt-2 max-w-sm text-[var(--text-muted)]">
+            No {filter.label.toLowerCase()} projects at the moment. Check back soon, or browse everything else.
+          </p>
+          <button
+            type="button"
+            onClick={() => setFilter(filters[0])}
+            className="btn-primary mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold"
+          >
+            Show all projects
+          </button>
+        </div>
+      )}
     </>
   );
 }

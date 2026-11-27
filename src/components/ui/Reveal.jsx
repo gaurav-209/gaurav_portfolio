@@ -20,7 +20,8 @@ export default function Reveal({ children, className = "", delay = 0 }) {
           observer.disconnect();
         }
       },
-      { threshold: 0.12 }
+      // Start fading in just before the element reaches the screen, so you never scroll onto empty space.
+      { threshold: 0, rootMargin: "0px 0px 15% 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();

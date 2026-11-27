@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { navLinks, site } from "@/data/site";
+import { smoothScrollTo } from "@/lib/scroll";
 
 // Sections tracked for the active underline. FAQ and Contact aren't in the navbar, but tracking them
 // means "Skills" stops being underlined once you scroll past it.
@@ -61,7 +62,7 @@ export default function Navbar() {
     if (!onHome) return;
     e.preventDefault();
     setOpen(false);
-    window.scrollTo({ top: 0 }); // smooth via the site's scroll-behavior, instant for reduced-motion users
+    smoothScrollTo(0);
     if (window.location.hash) history.replaceState(null, "", "/");
   };
 

@@ -16,9 +16,9 @@ import PhotoCard from "@/components/ui/PhotoCard";
 //   hidden; only while "flying" is this 3D card shown (CSS in globals.css). The swap happens at the
 //   exact same position, so it's invisible, and nothing 3D stays on screen once you stop scrolling.
 // - Progress p = scroll from the top (0) to the landing point (1). The landing point is SETTLE of a
-//   screen height before the About slot is centred, so the card drifts gently down into place and
-//   lands while you're still scrolling; the About section then glides up with the photo already settled.
-const SETTLE = 0.18;
+//   screen height before the About slot is centred (negative = after), so it sets how much scrolling the
+//   flight takes: lower values give the flip more time.
+const SETTLE = -0.12;
 
 export default function PhotoFlip({ front, back }) {
   const ref = useRef(null);
@@ -48,9 +48,12 @@ export default function PhotoFlip({ front, back }) {
       // Vertical follows scroll linearly, so the card holds its height on screen instead of bobbing;
       // sideways movement, size and the flip use the eased value.
       el.style.transform = `translate(${(about.x - hero.x) * e}px, ${(about.y - hero.y) * p}px) scale(${1 + (about.w / hero.w - 1) * e})`;
+      // The turn itself uses a gentle sine curve, so it rotates steadily through the whole flight instead of
+      // spinning mostly in the middle.
+      const turn = (1 - Math.cos(Math.PI * p)) / 2;
       // Flip. On wide screens it lifts slightly mid-flight; on phones, where the card fills the width and
       // starts low on the screen, it dips smaller mid-flight instead so the whole card stays in view.
-      flip.style.transform = `perspective(1400px) rotateY(${180 * e}deg) scale(${1 + midScale * Math.sin(Math.PI * e)})`;
+      flip.style.transform = `perspective(1400px) rotateY(${180 * turn}deg) scale(${1 + midScale * Math.sin(Math.PI * turn)})`;
     };
 
     // Slot positions relative to the wrapper; re-measured whenever the layout changes.

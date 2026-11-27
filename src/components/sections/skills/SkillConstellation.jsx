@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+import { smoothScrollTo } from "@/lib/scroll";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 
@@ -196,7 +197,7 @@ function SkillSheet({ onClose, children }) {
         <div data-sheet-handle className="flex shrink-0 justify-center pb-3 pt-3">
           <span className="h-1.5 w-10 rounded-full bg-white/25" aria-hidden />
         </div>
-        <div ref={bodyRef} className="overflow-y-auto overscroll-contain px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <div ref={bodyRef} data-lenis-prevent className="overflow-y-auto overscroll-contain px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           {children}
         </div>
       </div>
@@ -233,7 +234,7 @@ export default function SkillConstellation({ skills, categories, activeSkillId, 
       if (active?.id === id) return;
       // Bring the star up into the top part of the screen, above the sheet.
       const star = [...document.querySelectorAll(`[data-skill="${id}"]`)].find((el) => el.offsetParent);
-      if (star) window.scrollBy({ top: star.getBoundingClientRect().top - window.innerHeight * 0.22, behavior: "smooth" });
+      if (star) smoothScrollTo(window.scrollY + star.getBoundingClientRect().top - window.innerHeight * 0.22);
     }
     onSelect(id);
   };

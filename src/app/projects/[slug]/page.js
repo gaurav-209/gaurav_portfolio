@@ -17,7 +17,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const project = projects.find((p) => p.slug === slug);
-  if (!project) return { title: "Project | " + site.name };
+  if (!project) return { title: `Page not found | ${site.name}` };
   return {
     title: `${project.name} | ${site.name}`,
     description: project.shortDescription,

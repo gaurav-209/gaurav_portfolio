@@ -3,6 +3,7 @@ import { site, about, photoCards } from "@/data/site";
 import Reveal from "@/components/ui/Reveal";
 import TiltCard from "@/components/ui/TiltCard";
 import PhotoCard from "@/components/ui/PhotoCard";
+import Typewriter from "@/components/ui/Typewriter";
 
 // Two layouts from one set of elements:
 // - Phones/tablets: a big "FULL-STACK / DEVELOPER" title in front of the photo card (which tucks
@@ -36,10 +37,10 @@ export default function Hero() {
             <h1 className="hero-title text-[var(--text)] lg:mt-6 lg:text-[clamp(2.6rem,14vw,6.25rem)]">
               {/* Phones/tablets: uppercase, orange first line, dark second line stepped to the right */}
               <span className="block text-[clamp(2.6rem,14.2vw,6rem)] uppercase leading-[0.92] lg:hidden" aria-label={site.title}>
-                <span className="block whitespace-nowrap" aria-hidden>
+                <span className="hero-from-left block whitespace-nowrap" aria-hidden>
                   <span className="hero-gradient-text">{first}</span>
                 </span>
-                <span className="block whitespace-nowrap text-right" aria-hidden>
+                <span className="hero-from-right block whitespace-nowrap text-right" aria-hidden>
                   {rest.join(" ")}
                 </span>
               </span>
@@ -76,20 +77,29 @@ export default function Hero() {
             motion; otherwise PhotoFlip (in page.js) draws a moving card over it that flips into About.
             On phones it tucks up behind the title. */}
         <div data-photo-slot="hero" className="relative order-2 -mt-6 w-[62%] max-w-[18rem] md:max-w-[20rem] lg:order-none lg:mx-auto lg:mt-0 lg:w-full lg:max-w-[22rem]">
-          <Reveal delay={120}>
-            <TiltCard className="group">
-              <PhotoCard {...photoCards.front} priority />
-            </TiltCard>
-          </Reveal>
+          {/* Phones: the photo appears first (the animation is on this inner box, so the slot PhotoFlip
+              measures never moves) */}
+          <div className="hero-photo-in">
+            <Reveal delay={120}>
+              <TiltCard className="group">
+                <PhotoCard {...photoCards.front} priority />
+              </TiltCard>
+            </Reveal>
+          </div>
         </div>
 
         {/* Phones/tablets: the "how I work" line under the photo (on desktop it is in About) */}
-        <Reveal delay={180} className="order-3 mb-auto lg:hidden">
-          <p className="mt-5 text-center font-mono text-[12px] leading-relaxed whitespace-nowrap">
-            <span className="block text-[var(--text-muted)]">{"// how I work"}</span>
-            <span className="text-[var(--text)]">{about.howIWork}</span>
-          </p>
-        </Reveal>
+        {/* ...then the title slides in from both sides, then this types itself out */}
+        <div className="order-3 mb-auto lg:hidden">
+          <Typewriter
+            delay={1500}
+            className="mt-5 text-center font-mono text-[12px] leading-relaxed whitespace-nowrap"
+            lines={[
+              { text: "// how I work", className: "text-[var(--text-muted)]" },
+              { text: about.howIWork, className: "text-[var(--text)]" },
+            ]}
+          />
+        </div>
 
       </div>
 

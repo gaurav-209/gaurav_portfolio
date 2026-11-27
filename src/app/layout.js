@@ -4,6 +4,7 @@ import { site } from "@/data/site";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Analytics from "@/components/layout/Analytics";
+import SmoothScroll from "@/components/layout/SmoothScroll";
 /* single theme */
 
 const spaceGrotesk = Space_Grotesk({
@@ -61,6 +62,7 @@ export default function RootLayout({ children }) {
         <main id="top">{children}</main>
         <Footer />
         <Analytics />
+        <SmoothScroll />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
