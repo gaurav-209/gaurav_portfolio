@@ -505,7 +505,8 @@ const all = [
     ],
     stack: { Frontend: ["React", "Vite", "React Router", "Tailwind CSS"], SEO: ["react-helmet-async"] },
     cardTech: ["React", "Tailwind CSS", "React Router"],
-    // Client site: the code stays private, so no repo link. Add `links: { live: "https://..." }` once the new domain is set up.
+    // Client site: the code stays private, so no repo link. Swap `live` for the custom domain once it's set up.
+    links: { live: "https://adv-meheulmahavar-website.vercel.app" },
   },
   {
     slug: "nextjs-ecommerce",
