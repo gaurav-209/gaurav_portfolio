@@ -325,7 +325,7 @@ const all = [
     image: "/projects/mini-apps.webp",
     imageAlt: "Visiting Card Studio: choosing a card design",
     gallery: [{ src: "/projects/mini-apps-dashboard.webp", alt: "Mini Apps dashboard with Visiting Card Studio and WeatherMe" }],
-    links: { repo: "https://github.com/gaurav-209/mini-apps" },
+    links: { repo: "https://github.com/gaurav-209/mini-apps", live: "https://mini-apps-brown.vercel.app" },
   },
   {
     slug: "mycontacts",
@@ -438,7 +438,7 @@ const all = [
       Storage: ["localStorage"],
     },
     cardTech: ["React", "React Router", "Vite"],
-    links: { repo: "https://github.com/gaurav-209/TrackMyCash" },
+    links: { repo: "https://github.com/gaurav-209/TrackMyCash", live: "https://track-my-cash-five.vercel.app" },
   },
   {
     slug: "product-catalogue",
