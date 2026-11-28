@@ -473,38 +473,88 @@ const all = [
   },
   {
     slug: "advocate-website",
-    image: "/projects/advocate-website.webp",
-    imageAlt: "Advocate website home page",
+    featured: true,
+    image: "/projects/advocate-website-home.webp",
+    imageAlt: "Advocate website hero: headline, consultation buttons and the advocate's portrait",
+    gallery: [
+      { src: "/projects/advocate-website-trust.webp", alt: "About the advocate: profile, qualification, courts and practice highlights" },
+      { src: "/projects/advocate-website-services.webp", alt: "Legal services grid: when you may need each service and how it helps" },
+      { src: "/projects/advocate-website-steps.webp", alt: "How it works: three steps from first contact to clear next steps" },
+    ],
     kind: "personal",
     status: "in-progress",
     name: "Advocate Mehul Mahavar Website",
     category: "Professional Website",
     year: "2026",
-    tagline: "Website for a legal practice: practice areas, background and a consultation form.",
-    highlight: "Trust-focused design with a page for every practice area and per-page SEO.",
+    tagline: "Website for a High Court advocate in Ahmedabad, built to turn visitors into consultation requests.",
+    highlight: "Homepage that walks a visitor from their legal problem to booking a consultation.",
     shortDescription:
-      "A professional website for an advocate's legal practice: practice areas, background, FAQs and an easy way for clients to request a consultation.",
+      "A professional website for a Gujarat High Court advocate: practice areas, background, FAQs and a homepage designed to turn visitors into consultation requests.",
     description:
-      "A website for Advocate Mehul Mahavar's legal practice, designed to build trust with prospective clients. It presents the advocate's background and court practice, gives every practice area its own page, answers common questions and lets visitors request a consultation.",
+      "A website for an advocate practising before the Gujarat High Court in Ahmedabad. The homepage follows the visitor's path: the outcome they want, who the advocate is, the problem they are facing, the services that fit it, what happens after they get in touch, their common doubts, and a clear way to book. Every practice area has its own page, and each service links to the consultation form with that matter already selected.",
     facts: { role: "Design and development", platform: "Website" },
-    problem: "Prospective clients want to know what an advocate handles and how to reach them before they call.",
-    solution: "A clear, multi-page site with a detail page per practice area, FAQs and a consultation form on every key page.",
-    role: "Design and development.",
+    problem:
+      "People with a legal problem are often stressed and unsure where to start. A plain list of practice areas doesn't tell them whether this advocate can help, what contacting him involves, or why to reach out now.",
+    solution:
+      "A homepage structured as a journey: reassurance and a clear call to action first, then credentials, relatable problems, services written around the client's situation, a three-step process and honest FAQs, all ending in an easy way to book, call or message on WhatsApp.",
+    role: "Design and development: content structure, UI, front end and deployment.",
     contributions: [
-      "Trust-focused visual design: profile, court practice, approach and process sections.",
-      "Practice-areas list with a detail page for each area, driven by one data file.",
-      "Consultation form, FAQ, disclaimer, privacy and terms pages.",
-      "Per-page titles and meta tags with react-helmet-async; scroll-reveal animations.",
+      {
+        area: "Homepage",
+        items: [
+          "Seven-section layout: hero, about the advocate, client problems, services, how it works, FAQ and a final call to action.",
+          "Service cards that explain when you may need each service and how it helps, with a \"Discuss your case\" link that pre-selects the matter on the form.",
+          "Three-step process shown horizontally on desktop and as a vertical timeline on phones.",
+        ],
+      },
+      {
+        area: "Site",
+        items: [
+          "Detail page for every practice area, driven by one data file.",
+          "Consultation form, FAQ, disclaimer, privacy and terms pages, and a footer with contact details, map link and legal disclaimer.",
+          "Navy and gold visual identity with a court-facade line drawing behind the advocate's portrait.",
+        ],
+      },
+      {
+        area: "Quality",
+        items: [
+          "Per-page titles and meta tags, plus Person, LegalService and FAQPage structured data.",
+          "Accessible FAQ accordion, AA-contrast colours for small text, reduced-motion support, and no horizontal scroll from phone to desktop.",
+        ],
+      },
+    ],
+    challenges: [
+      {
+        title: "Placeholder content that can never go live",
+        detail:
+          "Credentials, statistics and testimonials had to be laid out before the real details arrived. Unverified items carry a flag: in development they show with a \"Demo\" tag, and production builds leave them out entirely, so nothing invented can be published by accident.",
+      },
+      {
+        title: "Persuasive without breaking professional rules",
+        detail:
+          "Advocates in India are limited in how they can advertise, so the copy stays factual and reassuring: no success rates, no invented reviews, and testimonials stay hidden until genuine, client-approved ones are added.",
+      },
+      {
+        title: "Deep links on a static host",
+        detail: "As a single-page app on Vercel, inner pages returned 404 when opened directly. A rewrite rule now serves the app for every route, and old URLs redirect to their new place.",
+      },
     ],
     keyFunctionality: [
+      "Conversion-focused homepage",
+      "Services that pre-fill the consultation form",
       "Practice areas with detail pages",
-      "Consultation request form",
-      "FAQ and legal disclaimer",
-      "Per-page SEO metadata",
-      "Mobile navigation",
+      "Call, WhatsApp and consultation form",
+      "FAQ with structured data",
+      "Mobile-first layout",
     ],
-    stack: { Frontend: ["React", "Vite", "React Router", "Tailwind CSS"], SEO: ["react-helmet-async"] },
+    stack: {
+      Frontend: ["React", "Vite", "React Router", "Tailwind CSS", "Lucide icons"],
+      SEO: ["react-helmet-async", "JSON-LD structured data"],
+      Hosting: ["Vercel"],
+    },
     cardTech: ["React", "Tailwind CSS", "React Router"],
+    learned:
+      "Structuring a page around what a visitor is thinking at each step, not around what the business wants to list, and keeping marketing copy honest within a profession's rules.",
     // Client site: the code stays private, so no repo link. Swap `live` for the custom domain once it's set up.
     links: { live: "https://adv-meheulmahavar-website.vercel.app" },
   },
