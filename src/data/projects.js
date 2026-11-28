@@ -2,7 +2,7 @@
 //
 // kind: "work" (built on the job) | "personal";  status (personal only): "completed" | "in-progress"
 // hidden: true                → left out of the site until it has content
-// featured: true              → one of the (about 5) projects stacked on the home page; the rest are on /projects
+// featured: 1–5               → position in the 5-project stack on the home page; the rest are on /projects
 // tagline                     → one line for the home-page card
 // highlight                   → your strongest contribution, shown on the card
 // shortDescription            → page meta description; description → case-study summary
@@ -17,7 +17,7 @@
 const all = [
   {
     slug: "swiftfolios-web",
-    featured: true,
+    featured: 1,
     kind: "work",
     name: "Swiftfolios Web App",
     category: "FinTech · Web Platform",
@@ -91,17 +91,17 @@ const all = [
       Charts: ["Recharts", "D3"],
     },
     cardTech: ["React", "Node.js", "MySQL"],
-    image: "/projects/swiftfolios-web.webp",
+    image: "/projects/sf-wealth-fund-research.webp",
     imageAlt: "Swiftfolios website: fund research review of a large-cap mutual fund",
     gallery: [
-      { src: "/projects/swiftfolios-web-portfolios.webp", alt: "Swiftfolios website: seven risk-calibrated model portfolios" },
-      { src: "/projects/swiftfolios-web-difference.webp", alt: "Swiftfolios website: how portfolios are monitored every day" },
+      { src: "/projects/sf-wealth-portfolios.webp", alt: "Swiftfolios website: seven risk-calibrated model portfolios" },
+      { src: "/projects/sf-wealth-difference.webp", alt: "Swiftfolios website: how portfolios are monitored every day" },
     ],
     links: { live: "https://www.swiftfolios.com/" },
   },
   {
     slug: "dealer-console",
-    featured: true,
+    featured: 2,
     kind: "work",
     name: "Swiftfolios Dealer Console",
     category: "Trading Technology · Desktop App",
@@ -169,22 +169,22 @@ const all = [
       Data: ["MySQL"],
     },
     cardTech: ["Electron", "React", "FIX Protocol"],
-    image: "/projects/dealer-console.webp",
+    image: "/projects/sf-execution-algos.webp",
     imageAlt: "Swiftfolios website: the nine execution algorithms available on the dealing desk",
     gallery: [
-      { src: "/projects/dealer-console-terminals.webp", alt: "Swiftfolios website: Dealer Terminal and Desktop Terminal features" },
-      { src: "/projects/dealer-console-risk.webp", alt: "Swiftfolios website: pre-trade and post-trade risk controls" },
+      { src: "/projects/sf-execution-terminals.webp", alt: "Swiftfolios website: Dealer Terminal and Desktop Terminal features" },
+      { src: "/projects/sf-execution-risk.webp", alt: "Swiftfolios website: pre-trade and post-trade risk controls" },
     ],
     links: { live: "https://www.swiftfolios.com/" },
   },
   {
     slug: "desktop-console",
-    featured: true,
-    image: "/projects/desktop-console.webp",
+    featured: 3,
+    image: "/projects/sf-execution-hero.webp",
     imageAlt: "Swiftfolios website: institutional execution with a live execution chart",
     gallery: [
-      { src: "/projects/dealer-console-terminals.webp", alt: "Swiftfolios website: Desktop Terminal features" },
-      { src: "/projects/desktop-console-analytics.webp", alt: "Swiftfolios website: execution analytics and cost decomposition" },
+      { src: "/projects/sf-execution-terminals.webp", alt: "Swiftfolios website: Desktop Terminal features" },
+      { src: "/projects/sf-execution-tca.webp", alt: "Swiftfolios website: execution analytics and cost decomposition" },
     ],
     links: { live: "https://www.swiftfolios.com/" },
     kind: "work",
@@ -257,7 +257,6 @@ const all = [
   },
   {
     slug: "mini-apps",
-    featured: true,
     kind: "personal",
     status: "completed",
     name: "React Mini Apps",
@@ -322,16 +321,23 @@ const all = [
       Data: ["WeatherAPI"],
     },
     cardTech: ["React", "Vite", "jsPDF"],
-    image: "/projects/mini-apps.webp",
+    image: "/projects/mini-apps-card-studio.webp",
     imageAlt: "Visiting Card Studio: choosing a card design",
-    gallery: [{ src: "/projects/mini-apps-dashboard.webp", alt: "Mini Apps dashboard with Visiting Card Studio and WeatherMe" }],
+    gallery: [
+      { src: "/projects/mini-apps-home.webp", alt: "Mini Apps dashboard with Visiting Card Studio and WeatherMe" },
+      { src: "/projects/mini-apps-weather.webp", alt: "WeatherMe: live weather with an animated sky and a 24-hour outlook" },
+    ],
     links: { repo: "https://github.com/gaurav-209/mini-apps", live: "https://mini-apps-brown.vercel.app" },
   },
   {
     slug: "mycontacts",
-    featured: true,
-    image: "/projects/mycontacts.webp",
-    imageAlt: "MyContacts dashboard: add-contact form and a list of contacts",
+    featured: 5,
+    image: "/projects/mycontacts-dashboard.webp",
+    imageAlt: "MyContacts dashboard: insights panel with birthdays and relationships, and a sortable contacts table",
+    gallery: [
+      { src: "/projects/mycontacts-details.webp", alt: "MyContacts: a contact's details with links, tags and notes" },
+      { src: "/projects/mycontacts-signup.webp", alt: "MyContacts sign-up page" },
+    ],
     kind: "personal",
     status: "completed",
     name: "MyContacts",
@@ -396,8 +402,9 @@ const all = [
   },
   {
     slug: "trackmycash",
-    image: "/projects/trackmycash.webp",
+    image: "/projects/trackmycash-dashboard.webp",
     imageAlt: "TrackMyCash dashboard: balance cards, add-transaction form and transactions",
+    gallery: [{ src: "/projects/trackmycash-delete.webp", alt: "TrackMyCash: confirm dialog before deleting a transaction" }],
     kind: "personal",
     status: "completed",
     name: "TrackMyCash",
@@ -473,7 +480,7 @@ const all = [
   },
   {
     slug: "advocate-website",
-    featured: true,
+    featured: 4,
     image: "/projects/advocate-website-home.webp",
     imageAlt: "Advocate website hero: headline, consultation buttons and the advocate's portrait",
     gallery: [
@@ -595,7 +602,7 @@ const all = [
   },
   {
     slug: "portfolio",
-    image: "/projects/portfolio.webp",
+    image: "/projects/portfolio-home.webp",
     imageAlt: "Portfolio home page",
     kind: "personal",
     status: "in-progress",
@@ -619,7 +626,7 @@ const all = [
   },
   {
     slug: "portfolio-v1",
-    image: "/projects/portfolio-v1.webp",
+    image: "/projects/portfolio-v1-home.webp",
     imageAlt: "First portfolio home page",
     kind: "personal",
     status: "completed",
@@ -666,4 +673,4 @@ export const projects = all.filter((p) => !p.hidden);
 
 export const techList = (p) => Object.values(p.stack ?? {}).flat();
 // Stacked on the home page, in this order; everything else is one click away on /projects.
-export const featuredProjects = projects.filter((p) => p.featured);
+export const featuredProjects = projects.filter((p) => p.featured).sort((a, b) => a.featured - b.featured);
